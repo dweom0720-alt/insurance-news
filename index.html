@@ -1,3 +1,4 @@
+```html
 <!DOCTYPE html>
 <html lang="ko">
 <head>
@@ -78,7 +79,7 @@
       <!-- 상단 액션 버튼들 -->
       <div class="flex items-center space-x-1.5">
         <!-- 🚀 GitHub 코드 수정 화면 바로가기 버튼 -->
-        <button id="openGithubEditBtn" class="flex items-center space-x-1 px-2.5 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-all shadow-xs" title="GitHub 코드 수정 화면 열기">
+        <button id="openGithubEditBtn" class="flex items-center space-x-1 px-2.5 py-1.5 text-xs font-bold text-white bg-slate-900 hover:bg-slate-800 rounded-lg transition-all shadow-xs" title="GitHub 코드 수정 화면 설정 및 열기">
           <svg class="w-3.5 h-3.5 text-slate-200" fill="currentColor" viewBox="0 0 24 24"><path fill-rule="evenodd" clip-rule="evenodd" d="M12 2C6.477 2 2 6.484 2 12.017c0 4.425 2.865 8.18 6.839 9.504.5.092.682-.217.682-.483 0-.237-.008-.868-.013-1.703-2.782.605-3.369-1.343-3.369-1.343-.454-1.158-1.11-1.466-1.11-1.466-.908-.62.069-.608.069-.608 1.003.07 1.53 1.032 1.53 1.032.892 1.53 2.341 1.088 2.91.832.092-.647.35-1.088.636-1.338-2.22-.253-4.555-1.113-4.555-4.951 0-1.093.39-1.988 1.029-2.688-.103-.253-.446-1.272.098-2.65 0 0 .84-.27 2.75 1.026A9.564 9.564 0 0112 6.844c.85.004 1.705.115 2.504.337 1.909-1.296 2.747-1.027 2.747-1.027.546 1.379.202 2.398.1 2.651.64.7 1.028 1.595 1.028 2.688 0 3.848-2.339 4.695-4.566 4.943.359.309.678.92.678 1.855 0 1.338-.012 2.419-.012 2.747 0 .268.18.58.688.482A10.019 10.019 0 0022 12.017C22 6.484 17.522 2 12 2z"/></svg>
           <span>코드 수정</span>
         </button>
@@ -150,7 +151,7 @@
     <!-- 📑 대표 키워드로만 깔끔하게 구성된 분야(카테고리) 탭 바 -->
     <section class="sticky top-[168px] z-30 glass-nav -mx-4 px-4 py-1.5 border-y border-slate-200/60 flex items-center justify-between">
       <div class="flex space-x-1 overflow-x-auto hide-scrollbar flex-1 pr-2" id="categoryTabsContainer">
-        <!-- [전체] [주요뉴스] [경제동향] [사건사고] [보험] [GA] [수수료] 등 대표 키워드 동적 렌더링 -->
+        <!-- [전체] [주요뉴스] [경제동향] [사건사고] [보험관련기사] 등 대표 키워드 탭 동적 렌더링 -->
       </div>
       <button id="openCategoryModalBtn" class="flex-shrink-0 flex items-center space-x-1 px-2.5 py-1 text-xs font-bold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-200/80" title="분야 관리">
         <span>⚙️ 분야 관리</span>
@@ -168,7 +169,7 @@
       </button>
     </div>
 
-    <!-- 뉴스 피드 리스트 (주요뉴스, 경제동향, 사건사고, 보험 등 통합 피드) -->
+    <!-- 뉴스 피드 리스트 -->
     <section id="newsFeedList" class="space-y-3 pb-12">
       <!-- JS로 기사 카드들이 렌더링됩니다 -->
     </section>
@@ -183,7 +184,7 @@
     </div>
   </main>
 
-  <!-- 📁 분야(카테고리) 관리 모달 (대표 키워드 간소화 및 입력 시 자동 정제) -->
+  <!-- 📁 스마트 자연어 분야 관리 모달 (자연어 입력 -> 관련 키워드 자동 확장 + 대표분야명 생성) -->
   <div id="categoryModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
     <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 border border-slate-100">
       
@@ -191,11 +192,11 @@
       <div class="flex items-center justify-between border-b border-slate-100 pb-3">
         <div class="flex items-center space-x-2">
           <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
-            📁
+            ✨
           </div>
           <div>
-            <h3 class="font-bold text-slate-900 text-sm">뉴스 분야(카테고리) 관리</h3>
-            <p class="text-[11px] text-slate-400">대표 키워드로 등록해 주요뉴스, 경제동향, 사건사고를 바로 확인하세요.</p>
+            <h3 class="font-bold text-slate-900 text-sm">자연어 맞춤 분야 관리</h3>
+            <p class="text-[11px] text-slate-400">원하는 검색 의도를 문장으로 적으면 연관 뉴스를 자동 추출합니다.</p>
           </div>
         </div>
         <button id="closeCategoryModal" class="text-slate-400 hover:text-slate-600 p-1">
@@ -203,30 +204,43 @@
         </button>
       </div>
 
-      <!-- 새 분야 추가 입력 폼 -->
-      <div class="space-y-1.5">
-        <label class="text-[11px] font-bold text-slate-700">새 대표 분야 추가 (쉼표로 여러 개 동시 입력 가능)</label>
-        <div class="flex space-x-2">
-          <input type="text" id="newCategoryInput" placeholder="예: 경제동향, 사건사고, 주요뉴스, 부동산" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all">
-          <button id="addCategoryBtn" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl transition-colors whitespace-nowrap shadow-xs">
-            추가
-          </button>
+      <!-- 🧠 자연어 입력 폼 -->
+      <div class="space-y-2">
+        <div>
+          <label class="text-[11px] font-bold text-slate-700 flex items-center justify-between">
+            <span>자연어 검색 명령 (원하는 뉴스 문장으로 입력)</span>
+            <span class="text-[10px] text-indigo-600 font-normal">예: 보험사와 GA의 동향 관련 뉴스 검색해줘</span>
+          </label>
+          <textarea id="naturalCategoryPrompt" rows="2" placeholder="예: 보험사와 ga의 동향과 관련된 뉴스를 검색해줘&#10;예: 기준금리 변동 및 경제동향 뉴스 모아줘" class="w-full mt-1 bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all leading-relaxed"></textarea>
         </div>
-        <p class="text-[10px] text-slate-400">※ 긴 단어를 입력해도 탭에는 깔끔한 대표 키워드로 표시됩니다.</p>
+
+        <div>
+          <label class="text-[11px] font-bold text-slate-700 flex items-center justify-between">
+            <span>대표 분야 목록 이름 (탭에 표시될 이름)</span>
+            <span class="text-[10px] text-slate-400 font-normal">비워두면 자동 지정 (예: 보험관련기사)</span>
+          </label>
+          <div class="flex space-x-2 mt-1">
+            <input type="text" id="customRepNameInput" placeholder="예: 보험관련기사 (선택사항)" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all">
+            <button id="addSmartCategoryBtn" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-xl transition-colors whitespace-nowrap shadow-xs flex items-center space-x-1">
+              <span>✨ 분야 생성</span>
+            </button>
+          </div>
+        </div>
+
+        <div class="p-2.5 bg-slate-50 border border-slate-200/70 rounded-xl text-[11px] text-slate-600 leading-relaxed">
+          💡 <strong>작동 예시</strong>: <span class="text-indigo-700 font-medium">"보험사와 ga의 동향과 관련된 뉴스를 검색해줘"</span>라고 입력하면, 시스템이 <strong>1200%, 분급, 설계사이동, 제판분리</strong> 등 관련성 높은 키워드를 자동 매칭하고 탭 이름은 <strong>[보험관련기사]</strong>로 깔끔하게 등록합니다.
+        </div>
       </div>
 
-      <!-- 등록된 분야 목록 -->
-      <div class="space-y-1.5">
+      <!-- 등록된 대표 분야 목록 -->
+      <div class="space-y-1.5 pt-1">
         <div class="flex items-center justify-between">
-          <label class="text-[11px] font-bold text-slate-700">등록된 대표 분야 목록 (<span id="categoryCount">0</span>개)</label>
+          <label class="text-[11px] font-bold text-slate-700">현재 등록된 대표 분야 목록 (<span id="categoryCount">0</span>개)</label>
           <button id="resetCategoriesBtn" class="text-[10px] text-slate-400 hover:text-rose-600 transition-colors">
             기본값 복원
           </button>
         </div>
-        
-        <div id="categoryListContainer" class="max-h-60 overflow-y-auto space-y-1.5 pr-0.5">
-          <!-- JS로 카테고리별 수정/삭제 UI 렌더링 -->
-        </div>
+        <div id="categoryListContainer" class="max-h-56 overflow-y-auto space-y-1.5 pr-0.5"></div>
       </div>
 
       <div class="pt-2 border-t border-slate-100 flex justify-end">
@@ -272,7 +286,6 @@
             기본값 복원
           </button>
         </div>
-        
         <div id="keywordListContainer" class="max-h-60 overflow-y-auto space-y-1.5 pr-0.5"></div>
       </div>
 
@@ -284,27 +297,46 @@
     </div>
   </div>
 
-  <!-- 🐙 GitHub 저장소 주소 설정 모달 -->
+  <!-- 🐙 GitHub 저장소 주소 설정 및 수정 직통 연결 모달 -->
   <div id="githubModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
-    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4 border border-slate-100">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 border border-slate-100 animate-in fade-in slide-in-from-bottom-4">
       <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
         <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-1.5">
-          <span>🐙</span> <span>GitHub 코드 수정 화면 연결</span>
+          <span>🐙</span> <span>GitHub 코드 수정 화면 연결 설정</span>
         </h3>
         <button id="closeGithubModal" class="text-slate-400 hover:text-slate-600 p-1">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
         </button>
       </div>
-      <div class="space-y-2 text-xs text-slate-600">
-        <p class="leading-relaxed">내 GitHub 저장소 주소(예: `사용자명/저장소명`)를 입력해 두시면, 버튼 클릭 시 <strong>온라인 코드 수정 화면으로 바로 직통 연결</strong>됩니다.</p>
-        <div class="space-y-1">
-          <label class="text-[11px] font-bold text-slate-700">저장소 주소 (예: myid/insurance-news)</label>
-          <input type="text" id="githubRepoInput" placeholder="username/repository" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white">
-        </div>
+
+      <div class="p-3 bg-indigo-50/70 border border-indigo-100 rounded-xl space-y-1.5 text-xs">
+        <p class="font-bold text-indigo-950 flex items-center space-x-1">
+          <span>💡</span> <span>무엇을 입력해야 하나요?</span>
+        </p>
+        <p class="text-slate-700 leading-relaxed">
+          내 GitHub 사이트 주소창에 보이는 <strong>아이디/저장소명</strong>을 입력하세요.<br>
+          예시: <span class="bg-white px-1.5 py-0.5 rounded font-mono font-bold text-indigo-600 border border-indigo-200">myname/insurance-news</span>
+        </p>
+        <p class="text-[11px] text-slate-500">
+          (브라우저 주소창의 <code>https://github.com/아이디/저장소명</code> 전체를 그대로 복사해서 붙여넣으셔도 자동으로 알맞게 인식합니다.)
+        </p>
       </div>
-      <div class="flex space-x-2">
-        <button id="saveAndGoGithubBtn" class="flex-1 py-2.5 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition-colors">
-          저장하고 코드 수정 열기
+
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-bold text-slate-700">GitHub 저장소 주소</label>
+          <span id="currentRepoIndicator" class="text-[10px] text-slate-400 font-medium"></span>
+        </div>
+        <input type="text" id="githubRepoInput" placeholder="예: daewoung/insurance-news 또는 주소 전체 복사" class="w-full bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white font-mono">
+      </div>
+
+      <div class="space-y-2 pt-1">
+        <button id="saveAndGoGithubBtn" class="w-full py-2.5 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition-colors shadow-xs flex items-center justify-center space-x-1.5">
+          <span>저장하고 코드 편집기 열기</span>
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+        </button>
+        <button id="resetGithubRepoBtn" class="w-full py-1.5 text-slate-400 hover:text-rose-600 text-[11px] font-medium transition-colors">
+          주소 잘못 입력함 (기존 주소 초기화)
         </button>
       </div>
     </div>
@@ -345,25 +377,44 @@
 
   <!-- 인라인 스크립트: 데이터 및 필터 로직 -->
   <script>
-    // 1. 대표 키워드로만 구성된 기본 분야(카테고리) 목록
-    // 사용자가 요청한 간결한 대표 키워드 체계: 주요뉴스, 경제동향, 사건사고, 보험, GA, 수수료
+    // 1. 대표 키워드로 구성된 기본 분야(카테고리) 목록
+    // 요청에 따라 '보험관련기사' 및 주요 대표 키워드로 기본 구성
     const DEFAULT_CATEGORIES = [
-      { id: "headline", name: "주요뉴스", keywords: ["주요뉴스", "헤드라인", "속보", "종합", "정부"] },
-      { id: "economy", name: "경제동향", keywords: ["경제", "경제동향", "금리", "한국은행", "물가", "환율", "증시"] },
-      { id: "incident", name: "사건사고", keywords: ["사건", "사고", "사건사고", "사기", "경찰", "화재", "범죄", "수사", "폰지"] },
-      { id: "insurance", name: "보험", keywords: ["보험", "보험사", "생보", "손보", "종신", "간편건강"] },
-      { id: "ga", name: "GA", keywords: ["GA", "법인보험대리점", "설계사", "제판분리"] },
-      { id: "fee", name: "수수료", keywords: ["수수료", "1200%", "제도", "금감원", "시책", "규제", "환수"] }
+      {
+        id: "insurance_all",
+        name: "보험관련기사",
+        keywords: ["보험", "GA", "1200%", "분급", "설계사이동", "스카우트", "제판분리", "보험사", "시책", "수수료", "CSM", "정착지원금"]
+      },
+      {
+        id: "headline",
+        name: "주요뉴스",
+        keywords: ["주요뉴스", "헤드라인", "속보", "종합", "정부", "안보", "통상"]
+      },
+      {
+        id: "economy",
+        name: "경제동향",
+        keywords: ["경제", "경제동향", "기준금리", "한국은행", "물가", "환율", "증시", "고금리"]
+      },
+      {
+        id: "incident",
+        name: "사건사고",
+        keywords: ["사건", "사고", "사건사고", "사기", "폰지사기", "경찰", "화재", "범죄", "수사", "적발"]
+      },
+      {
+        id: "fee",
+        name: "수수료",
+        keywords: ["수수료", "1200%", "제도", "금감원", "시책", "우회", "환수", "정착지원금"]
+      }
     ];
 
     let myCategories = [...DEFAULT_CATEGORIES];
     try {
-      const savedCategories = localStorage.getItem("my_custom_categories_v2");
+      const savedCategories = localStorage.getItem("my_custom_categories_v3");
       if (savedCategories) myCategories = JSON.parse(savedCategories);
     } catch (e) {}
 
     // 2. 기본 관심 키워드
-    const DEFAULT_KEYWORDS = ["기준금리", "폰지사기", "1200%", "대형 GA", "단기납", "제판분리"];
+    const DEFAULT_KEYWORDS = ["1200%", "기준금리", "폰지사기", "분급", "설계사이동", "제판분리"];
     let myKeywords = [...DEFAULT_KEYWORDS];
     try {
       const savedKeywords = localStorage.getItem("my_custom_keywords");
@@ -377,20 +428,100 @@
       if (savedScale) currentFontScale = parseInt(savedScale, 10);
     } catch (e) {}
 
-    // 4. GitHub 저장소
+    // 4. GitHub 저장소 주소
     let githubRepo = "";
     try {
       githubRepo = localStorage.getItem("my_github_repo_url") || "";
     } catch (e) {}
 
-    // 5. 검증된 실제 기사 데이터 셋 (주요뉴스, 경제동향, 사건사고, 보험, GA, 수수료)
+    // 5. 검증된 실제 기사 데이터 셋
     const initialNewsData = [
+      // 🟢 [보험관련기사 / 수수료 / 1200%]
+      {
+        id: "news-fee-01",
+        title: "‘1200% 룰’의 역설… 기존 지원금 ‘족쇄’에 갇힌 GA업계 리크루팅",
+        source: "보험저널",
+        time: "15분 전",
+        category: "fee",
+        categoryName: "보험관련기사",
+        url: "https://www.insjournal.co.kr/news/articleView.html?idxno=32232",
+        summary: [
+          "계약 첫해 수수료와 시책 총합을 월보험료 1200%로 제한하는 '1200% 룰'로 인해 과거 설계사 스카우트비 대납 관행이 전면 차단되었습니다.",
+          "이직 설계사들이 이전 회사 정착지원금 반환에 실패할 경우 보증보험 사고자로 등재되는 등 설계사이동의 부작용이 속출하고 있습니다.",
+          "금감원의 우회 지원 차단 단속이 강화되면서 GA업계 리크루팅 시장이 급격히 냉각되고 분급 수수료 정착이 화두가 되었습니다."
+        ],
+        insight: "1200% 룰 위반 점검 리스크가 최고조에 달한 만큼, 무리한 스카우트비 편법 지급을 중단하고 분급 및 장기 유지수수료 중심의 안정적 보상 플랜으로 전환해야 합니다."
+      },
+      // 🟢 [보험관련기사 / 수수료 / 분급]
+      {
+        id: "news-fee-02",
+        title: "GA 수수료 우회지급 TF 꾸린 금감원… '1200% 룰' 초장에 잡는다",
+        source: "대한금융신문",
+        time: "28분 전",
+        category: "fee",
+        categoryName: "보험관련기사",
+        url: "https://www.kbanker.co.kr/news/articleView.html?idxno=225437",
+        summary: [
+          "금융감독원이 수수료 1200% 초과 지급과 복리후생비·시책비 등 편법 우회 지급 방지를 위한 전담 TF를 가동했습니다.",
+          "1차년도 수수료 첫 정산 결과가 나오는 시점에 맞춰 위반 의심 GA 명단을 추려 집중 현장 검사에 돌입합니다.",
+          "적발 시 기관경고 및 거액의 과징금 등 무관용 제재 방침을 분명히 했습니다."
+        ],
+        insight: "복리후생비나 경영지원비 명목의 간접 지원도 전면 조사 대상이므로, 본사와 지점 간 시책비 회계 집행 내역을 즉시 사전 점검해야 합니다."
+      },
+      // 🟢 [보험관련기사 / GA / 설계사이동 / 제판분리]
+      {
+        id: "news-ga-01",
+        title: "한화생명금융서비스, 제판분리 5주년 “GA업계 존재감” 증명",
+        source: "한국보험신문",
+        time: "35분 전",
+        category: "ga",
+        categoryName: "보험관련기사",
+        url: "https://www.insnews.co.kr/news/articleView.html?idxno=89897",
+        summary: [
+          "국내 대형 보험사 최초로 제판분리를 단행한 한화생명금융서비스가 출범 5년 만에 흑자 기조를 정착시키며 GA 시장 주도권을 확보했습니다.",
+          "자본 확충과 대규모 설계사 조직 유입으로 모회사 신계약 기여도를 대폭 끌어올렸습니다.",
+          "자회사형 GA의 급성장으로 기존 독립 대형 GA들과의 인력 쟁탈전과 설계사이동이 한층 심화되고 있습니다."
+        ],
+        insight: "자회사형 GA의 전산 및 교육 인프라에 맞서 독립 GA는 고객 맞춤형 다보험사 비교 분석 전문성과 차별화된 영업 지원 솔루션을 강화해야 합니다."
+      },
+      // 🟢 [보험관련기사 / GA / 설계사]
+      {
+        id: "news-ga-02",
+        title: "“연봉 1억 넘는 설계사만 5606명”… 매출·수익성 다 잡은 GA업계 게임체인저",
+        source: "매일경제",
+        time: "42분 전",
+        category: "ga",
+        categoryName: "보험관련기사",
+        url: "https://www.mk.co.kr/news/economy/11999628",
+        summary: [
+          "대형 GA 소속 설계사 중 억대 연봉자가 5600명을 넘어서며 전통 전속 채널 대비 높은 수익성을 입증했습니다.",
+          "다양한 생·손보사 상품을 맞춤 비교하는 판매 전문성이 소비자와 설계사 모두에게 호응을 얻고 있습니다.",
+          "다만 고소득 설계사의 잦은 이직과 유지율 관리는 여전히 업계 공동의 해결 과제로 지적됩니다."
+        ],
+        insight: "MDRT급 우수 설계사의 장기 정착을 유도하기 위해 일회성 수수료 경쟁 대신 조직 관리자 승진 기회와 지분 보상 프로그램 등의 복합 유인책이 효과적입니다."
+      },
+      // 🟢 [보험관련기사 / 보험사 / CSM]
+      {
+        id: "news-insurance-01",
+        title: "안 팔리던 장기 종신보험 확 늘어난 까닭… 단기납 규제 후 CSM 확보 격돌",
+        source: "한국경제",
+        time: "50분 전",
+        category: "insurance",
+        categoryName: "보험관련기사",
+        url: "https://www.hankyung.com/article/2026091565291",
+        summary: [
+          "단기납 종신보험의 환급률이 당국 규제로 낮아지자, 10년 이상 장기납 종신보험 신계약 비중이 52%로 급증했습니다.",
+          "보험사들이 IFRS17 수익 지표인 보험계약마진(CSM)을 안정적으로 확보하기 위해 장기납 상품 판매에 사활을 걸고 있습니다.",
+          "장기납에서도 고환급률 과당 경쟁이 재현될 경우 추가 규제가 불가피하다는 경고가 나옵니다."
+        ],
+        insight: "환급률을 앞세운 저축성 마케팅은 향후 계약 해지율 급등 시 위험요인이 되므로, 순수 보장 가치와 상속세 재원 마련 등 정석 컨설팅에 주력해야 합니다."
+      },
       // 🔴 [주요뉴스]
       {
         id: "news-headline-01",
         title: "[연합뉴스 이 시각 헤드라인] 정부·군 긴급 안보 점검 및 글로벌 통상 이슈 브리핑",
         source: "연합뉴스",
-        time: "30분 전",
+        time: "1시간 전",
         category: "headline",
         categoryName: "주요뉴스",
         url: "https://www.yna.co.kr/view/AKR20261023058400011",
@@ -406,7 +537,7 @@
         id: "news-economy-01",
         title: "금리 인상 잠시 멈춘 한은… 기준금리 3.00% '매파적 동결'",
         source: "매일경제",
-        time: "45분 전",
+        time: "1시간 20분 전",
         category: "economy",
         categoryName: "경제동향",
         url: "https://www.mk.co.kr/news/economy/12182575",
@@ -422,7 +553,7 @@
         id: "news-incident-01",
         title: "GA 보험설계사 97명 가담 1400억대 폰지사기 적발… 경찰 수사 확대",
         source: "매일경제",
-        time: "1시간 전",
+        time: "2시간 전",
         category: "incident",
         categoryName: "사건사고",
         url: "https://www.mk.co.kr/news/economy/11271015",
@@ -438,7 +569,7 @@
         id: "news-incident-02",
         title: "부천 오정구 공장 대형 화재 초기 진화 완료… 소방당국 원인 조사 착수",
         source: "연합뉴스",
-        time: "2시간 전",
+        time: "3시간 전",
         category: "incident",
         categoryName: "사건사고",
         url: "https://www.yna.co.kr/view/AKR20261023014400011",
@@ -448,106 +579,10 @@
           "산업단지 내 노후 시설에 대한 긴급 소방 안전 점검이 관할 지자체 주도로 확대 실시됩니다."
         ],
         insight: "제조 시설 화재는 설비 복구와 영업 중단 손실로 직결되므로, 기업 고객 대상 재물보험 및 화재배상책임보험의 보장 한도 적정성을 사전에 확인해야 합니다."
-      },
-      // 🟡 [수수료]
-      {
-        id: "news-fee-01",
-        title: "‘1200% 룰’의 역설… 기존 지원금 ‘족쇄’에 갇힌 GA업계 리크루팅",
-        source: "보험저널",
-        time: "2시간 전",
-        category: "fee",
-        categoryName: "수수료",
-        url: "https://www.insjournal.co.kr/news/articleView.html?idxno=32232",
-        summary: [
-          "계약 첫해 수수료와 시책 총합을 월보험료 1200%로 제한하는 '1200% 룰'로 인해 과거 설계사 스카우트비 대납 관행이 전면 차단되었습니다.",
-          "이직 설계사들이 이전 회사 정착지원금 반환에 실패할 경우 보증보험 사고자로 등재되는 등 부작용이 속출하고 있습니다.",
-          "금감원의 우회 지원 차단 단속이 강화되면서 GA업계 리크루팅 시장이 급격히 냉각되고 있습니다."
-        ],
-        insight: "1200% 룰 위반 점검 리스크가 최고조에 달한 만큼, 무리한 스카우트비 편법 지급을 중단하고 장기 유지수수료 중심의 안정적 보상 플랜으로 전환해야 합니다."
-      },
-      // 🟡 [수수료]
-      {
-        id: "news-fee-02",
-        title: "GA 수수료 우회지급 TF 꾸린 금감원… '1200% 룰' 초장에 잡는다",
-        source: "대한금융신문",
-        time: "3시간 전",
-        category: "fee",
-        categoryName: "수수료",
-        url: "https://www.kbanker.co.kr/news/articleView.html?idxno=225437",
-        summary: [
-          "금융감독원이 수수료 1200% 초과 지급과 복리후생비·시책비 등 편법 우회 지급 방지를 위한 전담 TF를 가동했습니다.",
-          "1차년도 수수료 첫 정산 결과가 나오는 시점에 맞춰 위반 의심 GA 명단을 추려 집중 현장 검사에 돌입합니다.",
-          "적발 시 기관경고 및 거액의 과징금 등 무관용 제재 방침을 분명히 했습니다."
-        ],
-        insight: "복리후생비나 경영지원비 명목의 간접 지원도 전면 조사 대상이므로, 본사와 지점 간 시책비 회계 집행 내역을 즉시 사전 점검해야 합니다."
-      },
-      // 🟣 [GA]
-      {
-        id: "news-ga-01",
-        title: "한화생명금융서비스, 제판분리 5주년 “GA업계 존재감” 증명",
-        source: "한국보험신문",
-        time: "3시간 전",
-        category: "ga",
-        categoryName: "GA",
-        url: "https://www.insnews.co.kr/news/articleView.html?idxno=89897",
-        summary: [
-          "국내 대형 보험사 최초로 제판분리를 단행한 한화생명금융서비스가 출범 5년 만에 흑자 기조를 정착시키며 GA 시장 주도권을 확보했습니다.",
-          "자본 확충과 대규모 설계사 조직 유입으로 모회사 신계약 기여도를 대폭 끌어올렸습니다.",
-          "자회사형 GA의 급성장으로 기존 독립 대형 GA들과의 인력 쟁탈전이 한층 심화되고 있습니다."
-        ],
-        insight: "자회사형 GA의 전산 및 교육 인프라에 맞서 독립 GA는 고객 맞춤형 다보험사 비교 분석 전문성과 차별화된 영업 지원 솔루션을 강화해야 합니다."
-      },
-      // 🟣 [GA]
-      {
-        id: "news-ga-02",
-        title: "“연봉 1억 넘는 설계사만 5606명”… 매출·수익성 다 잡은 GA업계 게임체인저",
-        source: "매일경제",
-        time: "4시간 전",
-        category: "ga",
-        categoryName: "GA",
-        url: "https://www.mk.co.kr/news/economy/11999628",
-        summary: [
-          "대형 GA 소속 설계사 중 억대 연봉자가 5600명을 넘어서며 전통 전속 채널 대비 높은 수익성을 입증했습니다.",
-          "다양한 생·손보사 상품을 맞춤 비교하는 판매 전문성이 소비자와 설계사 모두에게 호응을 얻고 있습니다.",
-          "다만 고소득 설계사의 잦은 이직과 유지율 관리는 여전히 업계 공동의 해결 과제로 지적됩니다."
-        ],
-        insight: "MDRT급 우수 설계사의 장기 정착을 유도하기 위해 일회성 수수료 경쟁 대신 조직 관리자 승진 기회와 지분 보상 프로그램 등의 복합 유인책이 효과적입니다."
-      },
-      // 🟢 [보험]
-      {
-        id: "news-insurance-01",
-        title: "안 팔리던 장기 종신보험 확 늘어난 까닭… 단기납 규제 후 CSM 확보 격돌",
-        source: "한국경제",
-        time: "4시간 전",
-        category: "insurance",
-        categoryName: "보험",
-        url: "https://www.hankyung.com/article/2026091565291",
-        summary: [
-          "단기납 종신보험의 환급률이 당국 규제로 낮아지자, 10년 이상 장기납 종신보험 신계약 비중이 52%로 급증했습니다.",
-          "보험사들이 IFRS17 수익 지표인 보험계약마진(CSM)을 안정적으로 확보하기 위해 장기납 상품 판매에 사활을 걸고 있습니다.",
-          "장기납에서도 고환급률 과당 경쟁이 재현될 경우 추가 규제가 불가피하다는 경고가 나옵니다."
-        ],
-        insight: "환급률을 앞세운 저축성 마케팅은 향후 계약 해지율 급등 시 위험요인이 되므로, 순수 보장 가치와 상속세 재원 마련 등 정석 컨설팅에 주력해야 합니다."
-      },
-      // 🟢 [보험]
-      {
-        id: "news-insurance-02",
-        title: "생명보험 안 든다… 신규 계약 13% 감소 속 손보사 제3보험 시장 잠식",
-        source: "서울경제",
-        time: "5시간 전",
-        category: "insurance",
-        categoryName: "보험",
-        url: "https://www.sedaily.com/article/20075242",
-        summary: [
-          "전통 생명보험 신계약 건수가 두 자릿수 감소세를 보인 반면, 손해보험사의 건강·간병·질병 등 제3보험 시장 점유율은 확대되었습니다.",
-          "생보사들도 종신보험 단일 의존도에서 벗어나 단체보험과 암·뇌·심장 건강보험 라인업을 보강하고 있습니다.",
-          "GA 영업 현장에서도 손보사 종합건강보험과 생보사 특화 상품 간의 교차 판매가 주류로 자리 잡았습니다."
-        ],
-        insight: "생·손보 경계가 무너진 제3보험 격전지에서 생보사 간편 건강보험의 면책기간 축소 등 손보 대비 유리한 인수 조건을 전략적으로 공략해야 합니다."
       }
     ];
 
-    // 상태 관리
+    // 상태 변수
     let currentCategory = "all";
     let activeKeyword = null;
     let searchQuery = "";
@@ -590,8 +625,9 @@
     const openCategoryModalBtn = document.getElementById("openCategoryModalBtn");
     const closeCategoryModal = document.getElementById("closeCategoryModal");
     const categoryDoneBtn = document.getElementById("categoryDoneBtn");
-    const newCategoryInput = document.getElementById("newCategoryInput");
-    const addCategoryBtn = document.getElementById("addCategoryBtn");
+    const naturalCategoryPrompt = document.getElementById("naturalCategoryPrompt");
+    const customRepNameInput = document.getElementById("customRepNameInput");
+    const addSmartCategoryBtn = document.getElementById("addSmartCategoryBtn");
     const categoryListContainer = document.getElementById("categoryListContainer");
     const categoryCount = document.getElementById("categoryCount");
     const resetCategoriesBtn = document.getElementById("resetCategoriesBtn");
@@ -602,12 +638,14 @@
     const fontIncBtn = document.getElementById("fontIncBtn");
     const fontScaleDisplay = document.getElementById("fontScaleDisplay");
 
-    // GitHub 직접 연결 모달
+    // GitHub 설정 모달
     const githubModal = document.getElementById("githubModal");
     const openGithubEditBtn = document.getElementById("openGithubEditBtn");
     const closeGithubModal = document.getElementById("closeGithubModal");
     const githubRepoInput = document.getElementById("githubRepoInput");
     const saveAndGoGithubBtn = document.getElementById("saveAndGoGithubBtn");
+    const resetGithubRepoBtn = document.getElementById("resetGithubRepoBtn");
+    const currentRepoIndicator = document.getElementById("currentRepoIndicator");
 
     // 기사 직통 열기
     window.openDirectArticle = function(url) {
@@ -634,7 +672,7 @@
       }, 2000);
     }
 
-    // 글자 크기 적용
+    // 글자 크기 조절
     function setFontScale(scale, notify = false) {
       scale = Math.max(80, Math.min(160, scale));
       currentFontScale = scale;
@@ -656,54 +694,116 @@
     fontDecBtn.addEventListener("click", () => setFontScale(currentFontScale - 5, true));
     fontIncBtn.addEventListener("click", () => setFontScale(currentFontScale + 5, true));
 
-    // GitHub 편집 화면 직통
-    openGithubEditBtn.addEventListener("click", () => {
-      if (githubRepo && githubRepo.trim() !== "") {
-        let cleanRepo = githubRepo.trim().replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
-        window.open(`https://github.com/${cleanRepo}/edit/main/index.html`, '_blank');
-        showToast("GitHub 코드 편집 화면으로 이동합니다.", "🐙");
+    // GitHub 저장소 주소 정제 함수
+    function cleanGithubRepo(raw) {
+      if (!raw) return "";
+      let t = raw.trim();
+      t = t.replace(/^https?:\/\/github\.com\//i, '');
+      t = t.replace(/\.git$/i, '');
+      t = t.split('/tree/')[0].split('/blob/')[0].split('/edit/')[0];
+      t = t.replace(/^\/+|\/+$/g, '');
+      return t;
+    }
+
+    function updateGithubModalUI() {
+      if (githubRepo) {
+        currentRepoIndicator.textContent = `현재 저장됨: ${githubRepo}`;
+        githubRepoInput.value = githubRepo;
+        resetGithubRepoBtn.classList.remove("hidden");
       } else {
-        githubModal.classList.remove("hidden");
+        currentRepoIndicator.textContent = "아직 등록되지 않음";
+        githubRepoInput.value = "";
+        resetGithubRepoBtn.classList.add("hidden");
       }
+    }
+
+    openGithubEditBtn.addEventListener("click", () => {
+      updateGithubModalUI();
+      githubModal.classList.remove("hidden");
+      githubRepoInput.focus();
     });
 
     closeGithubModal.addEventListener("click", () => githubModal.classList.add("hidden"));
+
     saveAndGoGithubBtn.addEventListener("click", () => {
-      const val = githubRepoInput.value.trim();
-      if (!val) {
-        showToast("저장소 주소를 입력해 주세요.", "⚠️");
+      const rawVal = githubRepoInput.value.trim();
+      const cleaned = cleanGithubRepo(rawVal);
+
+      if (!cleaned || !cleaned.includes('/')) {
+        showToast("아이디/저장소명 형식으로 입력해 주세요. (예: daewoung/insurance-news)", "⚠️");
         return;
       }
-      let cleanRepo = val.replace(/^https?:\/\/github\.com\//, '').replace(/\/$/, '');
-      githubRepo = cleanRepo;
+
+      githubRepo = cleaned;
       try {
-        localStorage.setItem("my_github_repo_url", cleanRepo);
+        localStorage.setItem("my_github_repo_url", cleaned);
       } catch (e) {}
+
       githubModal.classList.add("hidden");
-      window.open(`https://github.com/${cleanRepo}/edit/main/index.html`, '_blank');
-      showToast("저장소가 등록되어 편집 화면으로 이동합니다.", "🚀");
+      const editUrl = `https://github.com/${cleaned}/edit/main/index.html`;
+      window.open(editUrl, '_blank');
+      showToast("GitHub 온라인 코드 편집기로 이동합니다.", "🚀");
     });
 
-    // 📁 대표 키워드 정제 함수 (복잡한 입력 -> 간결한 대표 키워드로 변환)
-    function cleanToRepresentativeKeyword(text) {
-      let t = text.trim();
-      if (!t) return "";
-      // 일반적인 축약 및 대표어 매핑
-      if (t.includes("경제") && t.includes("동향")) return "경제동향";
-      if (t.includes("사건") || t.includes("사고")) return "사건사고";
-      if (t.includes("주요") || t.includes("헤드라인")) return "주요뉴스";
-      if (t.includes("보험사") || t.includes("보험사 동향")) return "보험사";
-      if (t.includes("수수료") || t.includes("1200%")) return "수수료";
-      if (t.toLowerCase() === "ga" || t.includes("대리점")) return "GA";
-      if (t.includes("보험")) return "보험";
-      // 공백, 특수문자 제거 후 첫 단어 위주로 깔끔하게 정제
-      return t.split(/[·,\s]+/)[0];
+    resetGithubRepoBtn.addEventListener("click", () => {
+      githubRepo = "";
+      try {
+        localStorage.removeItem("my_github_repo_url");
+      } catch (e) {}
+      updateGithubModalUI();
+      showToast("저장소 주소가 초기화되었습니다. 다시 입력해 주세요.", "🔄");
+    });
+
+    // 🧠 자연어 스마트 분야 생성 엔진 (Semantic Expansion Engine)
+    // 사용자가 "보험사와 ga의 동향과 관련된 뉴스를 검색해줘"라고 입력하면
+    // 대표명은 "보험관련기사"로 정제하고, 연관 키워드로 1200%, 분급, 설계사이동, 제판분리 등을 자동 확장!
+    function parseNaturalLanguageToCategory(sentence, customRepName) {
+      const text = sentence.trim();
+      let repName = customRepName ? customRepName.trim() : "";
+      let keywords = [];
+
+      const lower = text.toLowerCase();
+
+      // (1) 보험사 & GA 동향 관련 의도
+      if (lower.includes("보험") || lower.includes("ga") || lower.includes("설계사") || lower.includes("수수료")) {
+        if (!repName) repName = "보험관련기사";
+        keywords = ["보험", "GA", "1200%", "분급", "설계사이동", "스카우트", "제판분리", "보험사", "시책", "수수료", "정착지원금", "CSM"];
+      }
+      // (2) 경제 & 금리 & 금융 동향 의도
+      else if (lower.includes("경제") || lower.includes("금리") || lower.includes("환율") || lower.includes("한국은행") || lower.includes("물가")) {
+        if (!repName) repName = "경제동향";
+        keywords = ["경제", "경제동향", "기준금리", "한국은행", "물가", "환율", "증시", "고금리", "대출금리", "긴축"];
+      }
+      // (3) 사건사고 & 사기 & 화재 의도
+      else if (lower.includes("사건") || lower.includes("사고") || lower.includes("사기") || lower.includes("화재") || lower.includes("경찰")) {
+        if (!repName) repName = "사건사고";
+        keywords = ["사건", "사고", "사건사고", "사기", "폰지사기", "경찰", "화재", "범죄", "수사", "적발", "피해"];
+      }
+      // (4) 주요뉴스 & 헤드라인 의도
+      else if (lower.includes("주요") || lower.includes("헤드라인") || lower.includes("속보") || lower.includes("오늘")) {
+        if (!repName) repName = "주요뉴스";
+        keywords = ["주요뉴스", "헤드라인", "속보", "종합", "정부", "안보", "통상", "국정"];
+      }
+      // (5) 기타 일반 자연어 입력
+      else {
+        const words = text.replace(/[^가-힣a-zA-Z0-9\s]/g, "").split(/\s+/).filter(w => w.length >= 2 && !["검색해줘", "보여줘", "관련된", "뉴스", "모아줘", "알려줘", "대해서"].includes(w));
+        if (!repName) repName = words[0] || "맞춤분야";
+        keywords = [repName, ...words];
+      }
+
+      if (!keywords.includes(repName)) keywords.unshift(repName);
+
+      return {
+        id: "cat_" + Date.now(),
+        name: repName,
+        keywords: Array.from(new Set(keywords))
+      };
     }
 
     // 📁 분야(카테고리) 관리 및 탭 렌더링
     function saveCategories() {
       try {
-        localStorage.setItem("my_custom_categories_v2", JSON.stringify(myCategories));
+        localStorage.setItem("my_custom_categories_v3", JSON.stringify(myCategories));
       } catch (e) {}
       renderCategoryTabs();
       renderCategoryListInModal();
@@ -743,19 +843,24 @@
       }
 
       categoryListContainer.innerHTML = myCategories.map((cat, index) => `
-        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80">
-          <div class="flex items-center space-x-2 flex-1 mr-2" id="cat-display-${index}">
-            <span class="text-xs font-bold text-indigo-600">📁</span>
-            <span class="text-xs font-bold text-slate-900 break-all">${cat.name}</span>
-            <span class="text-[10px] text-slate-400 font-normal">(${(cat.keywords || [cat.name]).slice(0, 3).join(", ")})</span>
+        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+          <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-2 flex-1 mr-2" id="cat-display-${index}">
+              <span class="text-xs font-bold text-indigo-600">📁</span>
+              <span class="text-xs font-extrabold text-slate-900">${cat.name}</span>
+            </div>
+            <div class="flex items-center space-x-1" id="cat-actions-${index}">
+              <button onclick="startEditCategory(${index})" class="p-1 text-slate-400 hover:text-indigo-600 rounded-md transition-colors" title="수정">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+              </button>
+              <button onclick="deleteCategory(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-md transition-colors" title="삭제">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+              </button>
+            </div>
           </div>
-          <div class="flex items-center space-x-1" id="cat-actions-${index}">
-            <button onclick="startEditCategory(${index})" class="p-1 text-slate-400 hover:text-indigo-600 rounded-md transition-colors" title="수정">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
-            </button>
-            <button onclick="deleteCategory(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-md transition-colors" title="삭제">
-              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
-            </button>
+          <!-- 연관 자동 검색 키워드 표시 -->
+          <div class="text-[10px] text-slate-500 pl-5 leading-relaxed">
+            <span class="font-semibold text-slate-700">연관 검색어:</span> ${(cat.keywords || [cat.name]).join(", ")}
           </div>
         </div>
       `).join("");
@@ -797,48 +902,41 @@
       const input = document.getElementById(`edit-cat-input-${index}`);
       let newVal = input ? input.value.trim() : "";
       if (!newVal) {
-        showToast("분야 이름을 입력해 주세요.", "⚠️");
+        showToast("대표 분야 이름을 입력해 주세요.", "⚠️");
         return;
       }
-      let repName = cleanToRepresentativeKeyword(newVal);
-      myCategories[index].name = repName;
-      myCategories[index].keywords = [repName, newVal];
+      myCategories[index].name = newVal;
+      if (!myCategories[index].keywords.includes(newVal)) {
+        myCategories[index].keywords.unshift(newVal);
+      }
       saveCategories();
-      showToast(`'${repName}' 대표 분야로 수정되었습니다.`, "✅");
+      showToast(`'${newVal}' 대표 분야로 수정되었습니다.`, "✅");
     };
 
-    // 쉼표로 구분된 복수 키워드나 긴 단어를 대표 키워드로 자동 정제하여 추가
-    addCategoryBtn.addEventListener("click", () => {
-      const rawInput = newCategoryInput.value.trim();
-      if (!rawInput) {
-        showToast("추가할 분야 이름을 입력해 주세요.", "⚠️");
+    // ✨ 자연어 문장 입력으로 스마트 대표 분야 생성
+    addSmartCategoryBtn.addEventListener("click", () => {
+      const promptText = naturalCategoryPrompt.value.trim();
+      if (!promptText) {
+        showToast("원하는 뉴스 내용을 문장으로 입력해 주세요.", "⚠️");
         return;
       }
+      const customRep = customRepNameInput.value.trim();
+      const parsedCat = parseNaturalLanguageToCategory(promptText, customRep);
 
-      // 쉼표(,)가 있으면 분리하여 각각 대표 키워드로 등록
-      const rawTokens = rawInput.split(/[,]+/).map(t => t.trim()).filter(Boolean);
-      let addedCount = 0;
+      // 중복 체크 및 추가
+      const existingIdx = myCategories.findIndex(c => c.name === parsedCat.name);
+      if (existingIdx >= 0) {
+        // 기존 분야에 연관 키워드 병합
+        myCategories[existingIdx].keywords = Array.from(new Set([...myCategories[existingIdx].keywords, ...parsedCat.keywords]));
+        showToast(`'${parsedCat.name}' 분야의 연관 키워드가 업데이트되었습니다.`, "🔄");
+      } else {
+        myCategories.push(parsedCat);
+        showToast(`대표분야 '${parsedCat.name}' 탭이 생성되었습니다!`, "🎉");
+      }
 
-      rawTokens.forEach(token => {
-        const repName = cleanToRepresentativeKeyword(token);
-        if (repName && !myCategories.some(c => c.name === repName)) {
-          const newId = "cat_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
-          myCategories.push({
-            id: newId,
-            name: repName,
-            keywords: [repName, token]
-          });
-          addedCount++;
-        }
-      });
-
-      newCategoryInput.value = "";
+      naturalCategoryPrompt.value = "";
+      customRepNameInput.value = "";
       saveCategories();
-      showToast(`${addedCount}개의 대표 분야가 추가되었습니다.`, "🎉");
-    });
-
-    newCategoryInput.addEventListener("keydown", (e) => {
-      if (e.key === "Enter") addCategoryBtn.click();
     });
 
     resetCategoriesBtn.addEventListener("click", () => {
@@ -1061,7 +1159,7 @@ ${item.url}`;
       document.body.removeChild(textArea);
     }
 
-    // 🔍 똑똑한 분야별 기사 필터링 (선택된 대표 키워드 및 연관어 매칭)
+    // 🔍 분야별 기사 필터링 (연관 키워드 1200%, 분급, 설계사이동, 제판분리 등 폭넓은 시맨틱 매칭)
     function renderFeed() {
       let filtered = initialNewsData.filter(item => {
         // 1. 카테고리 필터
@@ -1070,12 +1168,10 @@ ${item.url}`;
         } else if (currentCategory !== "all") {
           const selectedCat = myCategories.find(c => c.id === currentCategory);
           if (selectedCat) {
-            // (1) 카테고리 고유 ID 직접 일치
             const matchId = item.category === selectedCat.id;
-            // (2) 대표 키워드명 일치
             const matchName = item.categoryName && item.categoryName.includes(selectedCat.name);
-            // (3) 키워드 묶음(keywords) 또는 대표명과 기사 내용 매칭
             const searchTerms = selectedCat.keywords || [selectedCat.name];
+
             const matchKeywords = searchTerms.some(term => {
               if (!term) return false;
               const t = term.toLowerCase();
@@ -1163,7 +1259,7 @@ ${item.url}`;
             <div class="bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 rounded-xl p-3 border border-indigo-100/90 shadow-2xs space-y-1">
               <div class="text-[11px] font-bold text-indigo-900 flex items-center space-x-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
-                <span>실무 & 사회적 시사점</span>
+                <span>실무 & 현장 시사점</span>
               </div>
               <p class="article-insight-text text-slate-800 font-medium leading-relaxed pl-3">
                 ${item.insight}
@@ -1234,3 +1330,4 @@ ${item.url}`;
   </script>
 </body>
 </html>
+```
