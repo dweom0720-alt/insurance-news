@@ -1,0 +1,944 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>인슈어 인사이트 | 나만의 보험·금융 AI 뉴스룸</title>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <style>
+    @import url('https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css');
+    body {
+      font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, system-ui, Roboto, sans-serif;
+      -webkit-tap-highlight-color: transparent;
+      letter-spacing: -0.015em;
+    }
+    .hide-scrollbar::-webkit-scrollbar {
+      display: none;
+    }
+    .hide-scrollbar {
+      -ms-overflow-style: none;
+      scrollbar-width: none;
+    }
+    .glass-nav {
+      background: rgba(255, 255, 255, 0.88);
+      backdrop-filter: blur(16px);
+      -webkit-backdrop-filter: blur(16px);
+    }
+    .card-shadow {
+      box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.04), 0 4px 14px 0 rgba(0, 0, 0, 0.03);
+    }
+    .card-hover:hover {
+      box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
+      transform: translateY(-1px);
+    }
+  </style>
+</head>
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900">
+
+  <!-- 상단 프리미엄 헤더 -->
+  <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/70 px-4 py-2.5 transition-all">
+    <div class="max-w-xl mx-auto flex items-center justify-between">
+      <!-- 브랜드 로고 및 라이브 인디케이터 -->
+      <div class="flex items-center space-x-2.5">
+        <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs">
+          <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
+            <path d="M9 12l2 2 4-4"/>
+          </svg>
+        </div>
+        <div>
+          <div class="flex items-center space-x-2">
+            <span class="text-sm font-extrabold tracking-tight text-slate-900">인슈어 인사이트</span>
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+              <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+              LIVE
+            </span>
+          </div>
+          <p class="text-[10px] text-slate-500 font-medium" id="headerDate">오늘 07:30 갱신됨</p>
+        </div>
+      </div>
+
+      <!-- 우측 빠른 액션 버튼들 -->
+      <div class="flex items-center space-x-1">
+        <button id="openKeywordModalBtn" class="flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-all" title="관심 키워드 편집">
+          <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+          <span>키워드 설정</span>
+        </button>
+        <button id="pwaHelpBtn" class="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors" title="홈 화면 추가 안내">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
+        </button>
+        <button id="refreshBtn" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="새로고침">
+          <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 검색창 바 -->
+    <div class="max-w-xl mx-auto mt-2">
+      <div class="relative">
+        <input type="text" id="searchInput" placeholder="기사 검색 또는 키워드 필터링..." class="w-full bg-slate-100/90 border border-slate-200/80 rounded-xl pl-9 pr-8 py-1.5 text-xs focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all text-slate-900 placeholder-slate-400">
+        <svg class="w-3.5 h-3.5 text-slate-400 absolute left-3 top-2.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+        <button id="clearSearchBtn" class="hidden absolute right-2.5 top-2 text-slate-400 hover:text-slate-600">
+          <svg class="w-3.5 h-3.5" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zM8.707 7.293a1 1 0 00-1.414 1.414L8.586 10l-1.293 1.293a1 1 0 101.414 1.414L10 11.414l1.293 1.293a1 1 0 001.414-1.414L11.414 10l1.293-1.293a1 1 0 00-1.414-1.414L10 8.586 8.707 7.293z" clip-rule="evenodd"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- 🎯 내 관심 키워드 칩 바 (직접 입력/수정/삭제 연동) -->
+    <div class="max-w-xl mx-auto mt-2 flex items-center space-x-1.5 overflow-x-auto hide-scrollbar pb-0.5" id="keywordChipsBar">
+      <span class="text-[10px] font-bold text-slate-400 whitespace-nowrap flex items-center space-x-0.5 pl-0.5">
+        <svg class="w-3 h-3 text-indigo-500" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"/></svg>
+        <span>키워드:</span>
+      </span>
+      <div id="keywordChipsContainer" class="flex items-center space-x-1.5">
+        <!-- JS로 동적 렌더링 -->
+      </div>
+      <button id="addKeywordQuickBtn" class="flex-shrink-0 inline-flex items-center px-2 py-0.5 rounded-full text-[11px] font-semibold bg-slate-200/70 text-slate-600 hover:bg-slate-300 transition-colors" title="키워드 추가">
+        + 추가
+      </button>
+    </div>
+  </header>
+
+  <!-- 메인 피드 컨테이너 -->
+  <main class="flex-1 max-w-xl w-full mx-auto px-4 py-3.5 space-y-4">
+
+    <!-- 🚨 섹션 1: 실시간 주요 뉴스 (헤드라인 속보) -->
+    <section id="breakingNewsSection" class="space-y-2">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-1.5">
+          <span class="flex h-2 w-2 relative">
+            <span class="animate-ping absolute inline-flex h-full w-full rounded-full bg-rose-400 opacity-75"></span>
+            <span class="relative inline-flex rounded-full h-2 w-2 bg-rose-500"></span>
+          </span>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-900">실시간 주요 뉴스 & 속보</h2>
+        </div>
+        <span class="text-[10px] text-rose-600 font-bold bg-rose-50 px-2 py-0.5 rounded-full border border-rose-100" id="breakingCount">3건</span>
+      </div>
+
+      <!-- 속보 수평 슬라이더 -->
+      <div id="breakingCardsContainer" class="flex space-x-3 overflow-x-auto pb-1.5 hide-scrollbar -mx-4 px-4 snap-x snap-mandatory">
+        <!-- JS로 렌더링 -->
+      </div>
+    </section>
+
+    <!-- 📑 섹션 2: 세련된 카테고리 세그먼트 탭 -->
+    <section class="sticky top-[138px] z-30 glass-nav -mx-4 px-4 py-1.5 border-y border-slate-200/60">
+      <div class="flex space-x-1 overflow-x-auto hide-scrollbar" id="categoryTabs">
+        <button data-cat="all" class="cat-tab px-3 py-1 rounded-lg text-xs font-semibold bg-slate-900 text-white shadow-xs whitespace-nowrap transition-all">
+          전체
+        </button>
+        <button data-cat="ga" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap transition-all">
+          보험·GA
+        </button>
+        <button data-cat="fee" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap transition-all">
+          수수료·제도
+        </button>
+        <button data-cat="insurer" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap transition-all">
+          보험사 동향
+        </button>
+        <button data-cat="finance" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap transition-all">
+          경제·금융
+        </button>
+        <button data-cat="bookmarks" class="cat-tab px-3 py-1 rounded-lg text-xs font-medium text-slate-600 hover:text-slate-900 hover:bg-slate-100 whitespace-nowrap transition-all flex items-center space-x-1">
+          <span>★ 북마크</span>
+          <span id="bookmarkBadge" class="bg-amber-100 text-amber-900 text-[10px] font-bold px-1.5 rounded-full hidden">0</span>
+        </button>
+      </div>
+    </section>
+
+    <!-- 활성화된 키워드 필터 상태 알림 (키워드 칩 클릭 시) -->
+    <div id="activeKeywordBanner" class="hidden items-center justify-between bg-indigo-50/90 border border-indigo-100 text-indigo-900 px-3 py-1.5 rounded-xl text-xs">
+      <div class="flex items-center space-x-1.5">
+        <span class="font-bold">#<span id="activeKeywordName">1200%</span></span>
+        <span class="text-indigo-600 text-[11px]">키워드로 필터링 중</span>
+      </div>
+      <button id="clearKeywordFilterBtn" class="text-indigo-700 hover:text-indigo-900 font-semibold text-[11px] underline">
+        필터 해제
+      </button>
+    </div>
+
+    <!-- 뉴스 피드 리스트 -->
+    <section id="newsFeedList" class="space-y-3 pb-12">
+      <!-- JS로 기사 카드들이 렌더링됩니다 -->
+    </section>
+
+    <!-- 검색/필터 결과 없음 상태 -->
+    <div id="emptyState" class="hidden py-16 text-center space-y-2 bg-white rounded-2xl border border-slate-200/80 p-6">
+      <div class="w-10 h-10 rounded-full bg-slate-100 flex items-center justify-center mx-auto text-slate-400">
+        <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+      </div>
+      <p class="text-xs font-bold text-slate-800">일치하는 뉴스를 찾지 못했습니다.</p>
+      <p class="text-[11px] text-slate-400">키워드를 다시 확인하거나 다른 카테고리를 선택해 보세요.</p>
+    </div>
+  </main>
+
+  <!-- 🎯 관심 키워드 관리 모달 (입력, 수정, 삭제) -->
+  <div id="keywordModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-md w-full p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 border border-slate-100">
+      
+      <!-- 모달 헤더 -->
+      <div class="flex items-center justify-between border-b border-slate-100 pb-3">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-bold text-xs">
+            #
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm">관심 키워드 관리</h3>
+            <p class="text-[11px] text-slate-400">직접 입력, 수정, 삭제하여 나만의 뉴스를 추적하세요.</p>
+          </div>
+        </div>
+        <button id="closeKeywordModal" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 신규 키워드 추가 입력 폼 -->
+      <div class="space-y-1.5">
+        <label class="text-[11px] font-bold text-slate-700">새 키워드 추가</label>
+        <div class="flex space-x-2">
+          <input type="text" id="newKeywordInput" placeholder="예: 단기납, 금감원, 한화생명, 제판분리" class="flex-1 bg-slate-50 border border-slate-200 rounded-xl px-3 py-2 text-xs text-slate-900 focus:outline-none focus:ring-2 focus:ring-slate-900 focus:bg-white transition-all">
+          <button id="addKeywordBtn" class="px-4 py-2 bg-slate-900 hover:bg-slate-800 text-white font-semibold text-xs rounded-xl transition-colors whitespace-nowrap shadow-xs">
+            추가
+          </button>
+        </div>
+      </div>
+
+      <!-- 현재 등록된 키워드 목록 (수정 / 삭제 가능) -->
+      <div class="space-y-1.5">
+        <div class="flex items-center justify-between">
+          <label class="text-[11px] font-bold text-slate-700">등록된 키워드 목록 (<span id="keywordCount">0</span>개)</label>
+          <button id="resetKeywordsBtn" class="text-[10px] text-slate-400 hover:text-rose-600 transition-colors">
+            기본값 복원
+          </button>
+        </div>
+        
+        <div id="keywordListContainer" class="max-h-60 overflow-y-auto space-y-1.5 pr-0.5">
+          <!-- JS로 키워드별 수정/삭제 UI 렌더링 -->
+        </div>
+      </div>
+
+      <!-- 모달 닫기 버튼 -->
+      <div class="pt-2 border-t border-slate-100 flex justify-end">
+        <button id="keywordDoneBtn" class="w-full py-2.5 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition-colors">
+          설정 완료
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- PWA 홈 화면 추가 가이드 모달 -->
+  <div id="pwaModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-3.5 border border-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <h3 class="font-bold text-slate-900 text-sm flex items-center space-x-1.5">
+          <span>📲</span> <span>홈 화면에 추가 (앱으로 쓰기)</span>
+        </h3>
+        <button id="closePwaModal" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+      <div class="space-y-2.5 text-xs text-slate-600">
+        <div class="p-3 bg-slate-50 rounded-xl space-y-1 border border-slate-100">
+          <p class="font-bold text-slate-900 text-xs flex items-center space-x-1">
+            <span>🍏</span> <span>아이폰 Safari</span>
+          </p>
+          <p class="text-[11px] leading-relaxed">하단 중앙 <strong>[공유]</strong> 버튼 → <strong>'홈 화면에 추가'</strong> 선택</p>
+        </div>
+        <div class="p-3 bg-slate-50 rounded-xl space-y-1 border border-slate-100">
+          <p class="font-bold text-slate-900 text-xs flex items-center space-x-1">
+            <span>🤖</span> <span>안드로이드 Chrome</span>
+          </p>
+          <p class="text-[11px] leading-relaxed">우측 상단 <strong>[점 3개 메뉴]</strong> → <strong>'홈 화면에 추가'</strong> 선택</p>
+        </div>
+      </div>
+      <button id="pwaConfirmBtn" class="w-full py-2.5 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition-colors">
+        확인했습니다
+      </button>
+    </div>
+  </div>
+
+  <!-- 토스트 알림 -->
+  <div id="toast" class="fixed bottom-6 left-1/2 -translate-x-1/2 z-50 bg-slate-900/95 backdrop-blur-md text-white text-xs px-4 py-2.5 rounded-full shadow-lg opacity-0 transition-opacity duration-300 pointer-events-none flex items-center space-x-2 border border-slate-700/50">
+    <span id="toastIcon">✨</span>
+    <span id="toastMsg">처리되었습니다.</span>
+  </div>
+
+  <!-- 데이터 및 비즈니스 로직 스크립트 -->
+  <script>
+    // 1. 기본 키워드 목록
+    const DEFAULT_KEYWORDS = [
+      "1200%",
+      "대형 GA",
+      "수수료",
+      "금감원",
+      "단기납",
+      "유병자보험",
+      "제판분리",
+      "기준금리"
+    ];
+
+    // 키워드 로컬 스토리지 불러오기
+    let myKeywords = [...DEFAULT_KEYWORDS];
+    try {
+      const savedKeywords = localStorage.getItem("my_custom_keywords");
+      if (savedKeywords) {
+        myKeywords = JSON.parse(savedKeywords);
+      }
+    } catch (e) {
+      console.warn("키워드 로컬스토리지 로드 실패", e);
+    }
+
+    // 2. 뉴스 데이터 셋
+    const initialNewsData = [
+      {
+        id: "news-01",
+        title: "금감원, 대형 GA '1200% 룰' 변칙 집행 실태 전면 점검 착수",
+        source: "보험저널",
+        time: "15분 전",
+        category: "fee",
+        categoryName: "수수료·제도",
+        categoryColor: "amber",
+        isBreaking: true,
+        url: "https://www.insjournal.co.kr",
+        summary: [
+          "금융감독원이 계약 1차년도 모집수수료를 월보험료의 1200% 이내로 제한하는 '1200% 룰'을 우회한 대형 GA 대상 집중 조사에 돌입했습니다.",
+          "시책(인센티브) 및 우회 수수료 지급 방식으로 상한선을 실질적으로 초과 지급한 위반 행위를 집중 점검합니다.",
+          "적발 시 기관경고 및 최대 수억 원대 과징금 부과 등 강력한 행정처분이 예고되었습니다."
+        ],
+        insight: "GA 본사 차원의 시책비 집행 가이드라인 전면 재점검이 시급하며, 1차년도 수수료에 의존하던 신인 설계사 정착 지원 제도의 보완책 마련이 불가피합니다."
+      },
+      {
+        id: "news-02",
+        title: "법인보험대리점(GA) 소속 설계사 26만 명 돌파… 전속 채널 격차 2배 확대",
+        source: "보험저널",
+        time: "42분 전",
+        category: "ga",
+        categoryName: "보험·GA",
+        categoryColor: "indigo",
+        isBreaking: true,
+        url: "https://www.insjournal.co.kr",
+        summary: [
+          "국내 GA 소속 설계사 수가 26만 3천 명을 넘어서며 생·손보사 전속 설계사(13만 명) 대비 2배 수준으로 격차가 벌어졌습니다.",
+          "대형 GA들의 잇따른 자본 확충 및 코스닥 상장 추진으로 채널 집중화가 가속화되고 있습니다.",
+          "반면 유지율 하락 및 불완전판매 리스크 관리가 새로운 규제 화두로 떠올랐습니다."
+        ],
+        insight: "전속 채널의 GA 이탈 흐름이 이어지는 가운데, 규모의 경제를 갖춘 상위 10대 GA 중심의 시장 재편과 인수합병(M&A)이 더욱 가속화될 전망입니다."
+      },
+      {
+        id: "news-03",
+        title: "생보사 '단기납 종신보험' 환급률 축소 후 경영인정기보험(CEO플랜)으로 전선 이동",
+        source: "한국경제",
+        time: "1시간 전",
+        category: "insurer",
+        categoryName: "보험사 동향",
+        categoryColor: "blue",
+        isBreaking: true,
+        url: "https://www.hankyung.com",
+        summary: [
+          "금융당국의 환급률 규제로 5년·7년납 단기납 종신보험 열풍이 식자, 주요 생보사들이 법인 CEO 대상 경영인정기보험 판매에 주력하고 있습니다.",
+          "법인세 절감 및 퇴직금 재원 마련 콘셉트로 영업 현장에 고시책을 내걸고 경쟁이 심화되고 있습니다.",
+          "금감원은 불완전판매 및 세무 리스크 관련 소비자 경보 발령을 검토 중입니다."
+        ],
+        insight: "CEO 플랜 영업 시 세무 이슈와 향후 해지환급금 과세 문제에 대한 객관적 증빙이 필수적이며, 무리한 절세 강조 마케팅은 향후 민원 리스크가 될 수 있습니다."
+      },
+      {
+        id: "news-04",
+        title: "손보사 '유병자·간편건강보험' 한도 경쟁 재점화… IFRS17 CSM 확보 총력",
+        source: "보험저널",
+        time: "2시간 전",
+        category: "insurer",
+        categoryName: "보험사 동향",
+        categoryColor: "blue",
+        isBreaking: false,
+        url: "https://www.insjournal.co.kr",
+        summary: [
+          "손보사들이 IFRS17 체제에서 보험계약마진(CSM) 확보에 유리한 유병자 간편심사보험 가입 연령과 보장 한도를 대폭 확대하고 있습니다.",
+          "고령자 및 만성질환자 유입으로 매출은 급증하고 있으나, 향후 위험손해율 상승 우려도 함께 제기됩니다.",
+          "가입 후 1~2년 이내 단기 면책/감액 조항을 축소하는 파격적인 보장 상품이 연이어 출시 중입니다."
+        ],
+        insight: "장기 보장성 CSM 확보에는 최적이나, 손해율 악화 시 향후 보험료 갱신 폭이 커질 수 있으므로 고객 상담 시 갱신형 vs 비갱신형 구조를 철저히 분리 설명해야 합니다."
+      },
+      {
+        id: "news-05",
+        title: "금융위, '보험 비교·추천 플랫폼' 2차 서비스 가동… 펫보험·여행자보험 확대",
+        source: "매일경제",
+        time: "3시간 전",
+        category: "fee",
+        categoryName: "수수료·제도",
+        categoryColor: "amber",
+        isBreaking: false,
+        url: "https://www.mk.co.kr",
+        summary: [
+          "네이버페이, 카카오페이, 토스 등 빅테크 플랫폼의 보험 비교추천 서비스에 펫보험과 해외여행자보험이 추가 연동되었습니다.",
+          "자동차보험 1차 출범 당시 대비 판매 수수료율 인하 협의가 완료되어 가격 경쟁력이 일부 보완되었습니다.",
+          "대면 GA 채널과의 영역 중복에 따른 현장 반발과 플랫폼 종속 우려는 지속되고 있습니다."
+        ],
+        insight: "단순 소액·미니보험은 플랫폼으로 빠르게 이동하겠지만, 복잡한 종합건강·종신보험은 여전히 대면 설계사의 심층 컨설팅 역량이 결정적 차별화 요소로 남을 것입니다."
+      },
+      {
+        id: "news-06",
+        title: "한국은행 기준금리 추가 동결 전망… 보험사 자산운용 및 예정이율 전략 고심",
+        source: "연합인포맥스",
+        time: "4시간 전",
+        category: "finance",
+        categoryName: "경제·금융",
+        categoryColor: "emerald",
+        isBreaking: false,
+        url: "https://news.einfomax.co.kr",
+        summary: [
+          "국내외 금리 인하 기대감이 다소 후퇴하면서 국고채 금리가 박스권에서 등락을 거듭하고 있습니다.",
+          "보험사들은 신규 투자 채권 금리가 정체됨에 따라 자산-부채 듀레이션 매칭에 신중을 기하고 있습니다.",
+          "보장성 보험의 예정이율 인하 조기 반영 여부를 두고 생·손보사 간 눈치싸움이 전개 중입니다."
+        ],
+        insight: "예정이율 인하 시 종신·건강보험의 보험료가 5~10% 인상될 수 있으므로, 금리 사이클 변동을 전후한 절판 및 포트폴리오 리모델링 제안 타이밍을 포착해야 합니다."
+      }
+    ];
+
+    // 상태 관리
+    let currentCategory = "all";
+    let activeKeyword = null; // 선택된 키워드 필터
+    let searchQuery = "";
+    let bookmarkedIds = [];
+
+    // 로컬 스토리지 북마크 불러오기
+    try {
+      const saved = localStorage.getItem("insur_news_bookmarks");
+      if (saved) {
+        bookmarkedIds = JSON.parse(saved);
+      }
+    } catch (e) {}
+
+    // DOM 캐싱
+    const newsFeedList = document.getElementById("newsFeedList");
+    const breakingCardsContainer = document.getElementById("breakingCardsContainer");
+    const breakingNewsSection = document.getElementById("breakingNewsSection");
+    const emptyState = document.getElementById("emptyState");
+    const searchInput = document.getElementById("searchInput");
+    const clearSearchBtn = document.getElementById("clearSearchBtn");
+    const bookmarkBadge = document.getElementById("bookmarkBadge");
+    const categoryTabs = document.querySelectorAll(".cat-tab");
+    const toast = document.getElementById("toast");
+    const toastMsg = document.getElementById("toastMsg");
+    const toastIcon = document.getElementById("toastIcon");
+
+    const keywordChipsContainer = document.getElementById("keywordChipsContainer");
+    const activeKeywordBanner = document.getElementById("activeKeywordBanner");
+    const activeKeywordName = document.getElementById("activeKeywordName");
+    const clearKeywordFilterBtn = document.getElementById("clearKeywordFilterBtn");
+
+    // 키워드 모달 엘리먼트
+    const keywordModal = document.getElementById("keywordModal");
+    const openKeywordModalBtn = document.getElementById("openKeywordModalBtn");
+    const addKeywordQuickBtn = document.getElementById("addKeywordQuickBtn");
+    const closeKeywordModal = document.getElementById("closeKeywordModal");
+    const keywordDoneBtn = document.getElementById("keywordDoneBtn");
+    const newKeywordInput = document.getElementById("newKeywordInput");
+    const addKeywordBtn = document.getElementById("addKeywordBtn");
+    const keywordListContainer = document.getElementById("keywordListContainer");
+    const keywordCount = document.getElementById("keywordCount");
+    const resetKeywordsBtn = document.getElementById("resetKeywordsBtn");
+
+    // 토스트 팝업 표시 함수
+    function showToast(msg, icon = "✨") {
+      toastMsg.textContent = msg;
+      toastIcon.textContent = icon;
+      toast.classList.remove("opacity-0");
+      toast.classList.add("opacity-100");
+      setTimeout(() => {
+        toast.classList.remove("opacity-100");
+        toast.classList.add("opacity-0");
+      }, 2000);
+    }
+
+    // 키워드 저장
+    function saveKeywords() {
+      try {
+        localStorage.setItem("my_custom_keywords", JSON.stringify(myKeywords));
+      } catch (e) {}
+      renderKeywordChips();
+      renderKeywordListInModal();
+      renderFeed();
+    }
+
+    // 상단 키워드 칩 렌더링
+    function renderKeywordChips() {
+      keywordChipsContainer.innerHTML = myKeywords.map(kw => {
+        const isActive = activeKeyword === kw;
+        return `
+          <button onclick="toggleKeywordFilter('${kw.replace(/'/g, "\\'")}')" class="flex-shrink-0 inline-flex items-center space-x-1 px-2.5 py-0.5 rounded-full text-xs font-medium transition-all ${
+            isActive
+              ? 'bg-indigo-600 text-white shadow-xs font-semibold'
+              : 'bg-white text-slate-700 border border-slate-200/90 hover:border-slate-300 hover:bg-slate-50'
+          }">
+            <span>#${kw}</span>
+          </button>
+        `;
+      }).join("");
+    }
+
+    // 키워드 필터 토글
+    window.toggleKeywordFilter = function(kw) {
+      if (activeKeyword === kw) {
+        activeKeyword = null;
+        activeKeywordBanner.classList.add("hidden");
+        showToast("키워드 필터가 해제되었습니다.", "🔍");
+      } else {
+        activeKeyword = kw;
+        activeKeywordName.textContent = kw;
+        activeKeywordBanner.classList.remove("hidden");
+        activeKeywordBanner.classList.add("flex");
+        showToast(`'#${kw}' 키워드로 필터링합니다.`, "🎯");
+      }
+      renderKeywordChips();
+      renderFeed();
+    };
+
+    clearKeywordFilterBtn.addEventListener("click", () => {
+      activeKeyword = null;
+      activeKeywordBanner.classList.add("hidden");
+      activeKeywordBanner.classList.remove("flex");
+      renderKeywordChips();
+      renderFeed();
+    });
+
+    // 키워드 모달 내부 목록 렌더링 (인라인 수정, 삭제 지원)
+    function renderKeywordListInModal() {
+      keywordCount.textContent = myKeywords.length;
+
+      if (myKeywords.length === 0) {
+        keywordListContainer.innerHTML = `
+          <p class="text-xs text-slate-400 py-4 text-center">등록된 키워드가 없습니다. 위에서 새 키워드를 추가해 보세요.</p>
+        `;
+        return;
+      }
+
+      keywordListContainer.innerHTML = myKeywords.map((kw, index) => `
+        <div class="flex items-center justify-between p-2 rounded-xl bg-slate-50 border border-slate-200/80 group">
+          <div class="flex items-center space-x-2 flex-1 mr-2" id="kw-display-${index}">
+            <span class="text-xs font-bold text-indigo-600">#</span>
+            <span class="text-xs font-semibold text-slate-800 break-all" id="kw-text-${index}">${kw}</span>
+          </div>
+
+          <div class="flex items-center space-x-1" id="kw-actions-${index}">
+            <button onclick="startEditKeyword(${index})" class="p-1 text-slate-400 hover:text-indigo-600 rounded-md transition-colors" title="수정">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            </button>
+            <button onclick="deleteKeyword(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-md transition-colors" title="삭제">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // 키워드 삭제
+    window.deleteKeyword = function(index) {
+      const removed = myKeywords.splice(index, 1)[0];
+      if (activeKeyword === removed) {
+        activeKeyword = null;
+        activeKeywordBanner.classList.add("hidden");
+      }
+      saveKeywords();
+      showToast(`'${removed}' 키워드가 삭제되었습니다.`, "🗑️");
+    };
+
+    // 키워드 인라인 수정 시작
+    window.startEditKeyword = function(index) {
+      const currentVal = myKeywords[index];
+      const displayEl = document.getElementById(`kw-display-${index}`);
+      const actionsEl = document.getElementById(`kw-actions-${index}`);
+
+      displayEl.innerHTML = `
+        <span class="text-xs font-bold text-indigo-600">#</span>
+        <input type="text" id="edit-input-${index}" value="${currentVal.replace(/"/g, '&quot;')}" class="w-full bg-white border border-indigo-400 rounded-lg px-2 py-0.5 text-xs text-slate-900 focus:outline-none focus:ring-1 focus:ring-indigo-500">
+      `;
+
+      actionsEl.innerHTML = `
+        <button onclick="saveEditKeyword(${index})" class="p-1 text-emerald-600 hover:text-emerald-700 font-bold" title="저장">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+        </button>
+        <button onclick="renderKeywordListInModal()" class="p-1 text-slate-400 hover:text-slate-600" title="취소">
+          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      `;
+
+      const input = document.getElementById(`edit-input-${index}`);
+      input.focus();
+      input.addEventListener("keydown", (e) => {
+        if (e.key === "Enter") saveEditKeyword(index);
+        if (e.key === "Escape") renderKeywordListInModal();
+      });
+    };
+
+    // 키워드 인라인 수정 저장
+    window.saveEditKeyword = function(index) {
+      const input = document.getElementById(`edit-input-${index}`);
+      const newVal = input ? input.value.trim() : "";
+      if (!newVal) {
+        showToast("키워드를 입력해 주세요.", "⚠️");
+        return;
+      }
+      const oldVal = myKeywords[index];
+      myKeywords[index] = newVal;
+      if (activeKeyword === oldVal) {
+        activeKeyword = newVal;
+        activeKeywordName.textContent = newVal;
+      }
+      saveKeywords();
+      showToast(`'${newVal}' 키워드로 수정되었습니다.`, "✅");
+    };
+
+    // 신규 키워드 추가
+    function handleAddKeyword() {
+      const val = newKeywordInput.value.trim();
+      if (!val) {
+        showToast("추가할 키워드를 입력해 주세요.", "⚠️");
+        return;
+      }
+      if (myKeywords.includes(val)) {
+        showToast("이미 등록된 키워드입니다.", "ℹ️");
+        return;
+      }
+      myKeywords.unshift(val);
+      newKeywordInput.value = "";
+      saveKeywords();
+      showToast(`'#${val}' 키워드가 추가되었습니다.`, "🎉");
+    }
+
+    addKeywordBtn.addEventListener("click", handleAddKeyword);
+    newKeywordInput.addEventListener("keydown", (e) => {
+      if (e.key === "Enter") handleAddKeyword();
+    });
+
+    // 기본 키워드로 리셋
+    resetKeywordsBtn.addEventListener("click", () => {
+      myKeywords = [...DEFAULT_KEYWORDS];
+      saveKeywords();
+      showToast("기본 키워드로 복원되었습니다.", "🔄");
+    });
+
+    // 모달 토글
+    function openKeywordManager() {
+      renderKeywordListInModal();
+      keywordModal.classList.remove("hidden");
+      setTimeout(() => newKeywordInput.focus(), 100);
+    }
+    openKeywordModalBtn.addEventListener("click", openKeywordManager);
+    addKeywordQuickBtn.addEventListener("click", openKeywordManager);
+    closeKeywordModal.addEventListener("click", () => keywordModal.classList.add("hidden"));
+    keywordDoneBtn.addEventListener("click", () => keywordModal.classList.add("hidden"));
+    keywordModal.addEventListener("click", (e) => {
+      if (e.target === keywordModal) keywordModal.classList.add("hidden");
+    });
+
+    // 북마크 배지 업데이트
+    function updateBookmarkBadge() {
+      if (bookmarkedIds.length > 0) {
+        bookmarkBadge.textContent = bookmarkedIds.length;
+        bookmarkBadge.classList.remove("hidden");
+      } else {
+        bookmarkBadge.classList.add("hidden");
+      }
+    }
+
+    // 북마크 토글
+    window.toggleBookmark = function(id) {
+      if (bookmarkedIds.includes(id)) {
+        bookmarkedIds = bookmarkedIds.filter(item => item !== id);
+        showToast("북마크가 해제되었습니다.", "🗑️");
+      } else {
+        bookmarkedIds.push(id);
+        showToast("북마크에 저장되었습니다.", "★");
+      }
+      try {
+        localStorage.setItem("insur_news_bookmarks", JSON.stringify(bookmarkedIds));
+      } catch (e) {}
+      updateBookmarkBadge();
+      renderFeed();
+      renderBreaking();
+    };
+
+    // 기사 요약 및 인사이트 텍스트 복사 (카톡/메신저 공유용)
+    window.copyArticleSummary = function(item) {
+      const textToCopy = `[인슈어 인사이트 브리핑]
+📌 ${item.title}
+출처: ${item.source} (${item.time})
+
+■ 3줄 핵심 요약:
+${item.summary.map(s => `• ${s}`).join("\n")}
+
+💡 실무 인사이트:
+${item.insight}
+
+원문 링크: ${item.url}`;
+
+      if (navigator.clipboard && navigator.clipboard.writeText) {
+        navigator.clipboard.writeText(textToCopy).then(() => {
+          showToast("요약과 인사이트가 복사되었습니다!", "📋");
+        }).catch(() => fallbackCopy(textToCopy));
+      } else {
+        fallbackCopy(textToCopy);
+      }
+    };
+
+    function fallbackCopy(text) {
+      const textArea = document.createElement("textarea");
+      textArea.value = text;
+      document.body.appendChild(textArea);
+      textArea.select();
+      try {
+        document.execCommand('copy');
+        showToast("요약과 인사이트가 복사되었습니다!", "📋");
+      } catch (err) {
+        showToast("복사 권한이 제한되어 있습니다.", "⚠️");
+      }
+      document.body.removeChild(textArea);
+    }
+
+    // 카테고리별 뱃지 스타일
+    function getBadgeClasses(color) {
+      switch (color) {
+        case "amber": return "bg-amber-50 text-amber-800 border-amber-200/80";
+        case "indigo": return "bg-indigo-50 text-indigo-800 border-indigo-200/80";
+        case "blue": return "bg-blue-50 text-blue-800 border-blue-200/80";
+        case "emerald": return "bg-emerald-50 text-emerald-800 border-emerald-200/80";
+        default: return "bg-slate-100 text-slate-800 border-slate-200";
+      }
+    }
+
+    // 속보 헤드라인 렌더링
+    function renderBreaking() {
+      const breakingList = initialNewsData.filter(item => item.isBreaking);
+      document.getElementById("breakingCount").textContent = `${breakingList.length}건`;
+
+      if (breakingList.length === 0) {
+        breakingNewsSection.classList.add("hidden");
+        return;
+      }
+      breakingNewsSection.classList.remove("hidden");
+
+      breakingCardsContainer.innerHTML = breakingList.map(item => `
+        <div class="min-w-[85%] sm:min-w-[320px] bg-white border border-rose-100/90 rounded-2xl p-3.5 card-shadow snap-center space-y-2 relative overflow-hidden">
+          <div class="absolute -right-6 -bottom-6 w-20 h-20 bg-rose-50 rounded-full opacity-50 pointer-events-none"></div>
+          <div class="flex items-center justify-between">
+            <span class="inline-flex items-center space-x-1 text-[10px] font-bold text-rose-700 bg-rose-50 border border-rose-200/60 px-2 py-0.5 rounded-full">
+              <span class="w-1.5 h-1.5 rounded-full bg-rose-500"></span>
+              <span>속보</span>
+            </span>
+            <span class="text-[11px] text-slate-400 font-medium">${item.source} · ${item.time}</span>
+          </div>
+          <h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2 hover:text-indigo-600 cursor-pointer" onclick="window.open('${item.url}', '_blank')">
+            ${item.title}
+          </h3>
+          <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+            ${item.summary[0]}
+          </p>
+          <div class="pt-0.5 flex items-center justify-between text-[11px]">
+            <button onclick="window.scrollToNews('${item.id}')" class="text-indigo-600 font-bold hover:underline flex items-center space-x-0.5">
+              <span>상세 분석 보기</span>
+              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            </button>
+            <button onclick="toggleBookmark('${item.id}')" class="text-slate-400 hover:text-amber-500 transition-colors">
+              ${bookmarkedIds.includes(item.id) ? '★' : '☆'}
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    // 메인 피드 렌더링
+    function renderFeed() {
+      let filtered = initialNewsData.filter(item => {
+        // 1. 카테고리 필터
+        if (currentCategory === "bookmarks") {
+          if (!bookmarkedIds.includes(item.id)) return false;
+        } else if (currentCategory !== "all") {
+          if (item.category !== currentCategory) return false;
+        }
+
+        // 2. 키워드 필터 (선택된 키워드 칩)
+        if (activeKeyword) {
+          const kw = activeKeyword.toLowerCase();
+          const matchTitle = item.title.toLowerCase().includes(kw);
+          const matchSummary = item.summary.some(s => s.toLowerCase().includes(kw));
+          const matchInsight = item.insight.toLowerCase().includes(kw);
+          if (!matchTitle && !matchSummary && !matchInsight) return false;
+        }
+
+        // 3. 검색어 필터
+        if (searchQuery.trim() !== "") {
+          const q = searchQuery.toLowerCase();
+          const matchTitle = item.title.toLowerCase().includes(q);
+          const matchSummary = item.summary.some(s => s.toLowerCase().includes(q));
+          const matchInsight = item.insight.toLowerCase().includes(q);
+          const matchSource = item.source.toLowerCase().includes(q);
+          if (!matchTitle && !matchSummary && !matchInsight && !matchSource) return false;
+        }
+        return true;
+      });
+
+      if (filtered.length === 0) {
+        newsFeedList.innerHTML = "";
+        emptyState.classList.remove("hidden");
+        return;
+      }
+      emptyState.classList.add("hidden");
+
+      newsFeedList.innerHTML = filtered.map(item => {
+        const isBookmarked = bookmarkedIds.includes(item.id);
+        const badgeClass = getBadgeClasses(item.categoryColor);
+
+        return `
+          <article id="${item.id}" class="bg-white rounded-2xl border border-slate-200/80 p-4 card-shadow card-hover transition-all space-y-3">
+            <!-- 기사 헤더 메타 -->
+            <div class="flex items-center justify-between">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeClass}">
+                  ${item.categoryName}
+                </span>
+                ${item.isBreaking ? '<span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">속보</span>' : ''}
+              </div>
+              <div class="flex items-center space-x-1.5 text-xs text-slate-400 font-medium">
+                <span class="text-slate-600 font-semibold">${item.source}</span>
+                <span>·</span>
+                <span>${item.time}</span>
+              </div>
+            </div>
+
+            <!-- 기사 제목 -->
+            <h2 class="text-sm font-bold text-slate-900 leading-snug">
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 transition-colors flex items-start justify-between group">
+                <span>${item.title}</span>
+                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-500 ml-1.5 flex-shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+              </a>
+            </h2>
+
+            <!-- 📌 AI 3줄 핵심 팩트 요약 -->
+            <div class="bg-slate-50/90 rounded-xl p-3 border border-slate-100 space-y-1.5">
+              <div class="text-[11px] font-bold text-slate-700 flex items-center space-x-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
+                <span>AI 3줄 핵심 팩트</span>
+              </div>
+              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+                ${item.summary.map(s => `
+                  <li class="flex items-start space-x-1.5">
+                    <span class="text-indigo-500 font-bold select-none">•</span>
+                    <span>${s}</span>
+                  </li>
+                `).join("")}
+              </ul>
+            </div>
+
+            <!-- 💡 실무 인사이트 (GA 현장 및 수수료 영향) -->
+            <div class="bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 rounded-xl p-3 border border-indigo-100/90 shadow-2xs space-y-1">
+              <div class="text-[11px] font-bold text-indigo-900 flex items-center space-x-1.5">
+                <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
+                <span>실무 & 영업 현장 시사점</span>
+              </div>
+              <p class="text-xs text-slate-800 font-medium leading-relaxed pl-3">
+                ${item.insight}
+              </p>
+            </div>
+
+            <!-- 하단 툴바 버튼들 -->
+            <div class="pt-2 flex items-center justify-between border-t border-slate-100/80 text-xs">
+              <button onclick="copyArticleSummary(${JSON.stringify(item).replace(/"/g, '&quot;')})" class="flex items-center space-x-1.5 py-1 px-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors font-medium">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                <span>요약 복사</span>
+              </button>
+
+              <div class="flex items-center space-x-1.5">
+                <button onclick="toggleBookmark('${item.id}')" class="flex items-center space-x-1 py-1 px-2.5 rounded-lg hover:bg-slate-100 transition-colors ${isBookmarked ? 'text-amber-600 font-bold' : 'text-slate-500'}">
+                  <span>${isBookmarked ? '★ 저장됨' : '☆ 북마크'}</span>
+                </button>
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1 py-1 px-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium transition-colors text-[11px]">
+                  <span>원문</span>
+                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                </a>
+              </div>
+            </div>
+          </article>
+        `;
+      }).join("");
+    }
+
+    // 전역 스크롤 함수
+    window.scrollToNews = function(id) {
+      const el = document.getElementById(id);
+      if (el) {
+        el.scrollIntoView({ behavior: 'smooth', block: 'center' });
+        el.classList.add("ring-2", "ring-indigo-500");
+        setTimeout(() => el.classList.remove("ring-2", "ring-indigo-500"), 1800);
+      }
+    };
+
+    // 카테고리 탭 클릭 이벤트
+    categoryTabs.forEach(tab => {
+      tab.addEventListener("click", () => {
+        categoryTabs.forEach(t => {
+          t.classList.remove("bg-slate-900", "text-white", "shadow-xs", "font-semibold");
+          t.classList.add("text-slate-600", "font-medium");
+        });
+        tab.classList.remove("text-slate-600", "font-medium");
+        tab.classList.add("bg-slate-900", "text-white", "shadow-xs", "font-semibold");
+
+        currentCategory = tab.dataset.cat;
+        renderFeed();
+      });
+    });
+
+    // 검색 입력 이벤트
+    searchInput.addEventListener("input", (e) => {
+      searchQuery = e.target.value;
+      if (searchQuery.length > 0) {
+        clearSearchBtn.classList.remove("hidden");
+      } else {
+        clearSearchBtn.classList.add("hidden");
+      }
+      renderFeed();
+    });
+
+    clearSearchBtn.addEventListener("click", () => {
+      searchInput.value = "";
+      searchQuery = "";
+      clearSearchBtn.classList.add("hidden");
+      renderFeed();
+      searchInput.focus();
+    });
+
+    // 새로고침 버튼
+    const refreshBtn = document.getElementById("refreshBtn");
+    const refreshIcon = document.getElementById("refreshIcon");
+    refreshBtn.addEventListener("click", () => {
+      refreshIcon.classList.add("animate-spin");
+      setTimeout(() => {
+        refreshIcon.classList.remove("animate-spin");
+        const now = new Date();
+        const hours = String(now.getHours()).padStart(2, '0');
+        const minutes = String(now.getMinutes()).padStart(2, '0');
+        document.getElementById("headerDate").textContent = `오늘 ${hours}:${minutes} 갱신됨`;
+        showToast("최신 기사 데이터를 동기화했습니다.", "🔄");
+      }, 500);
+    });
+
+    // PWA 가이드 모달
+    const pwaModal = document.getElementById("pwaModal");
+    const pwaHelpBtn = document.getElementById("pwaHelpBtn");
+    const closePwaModal = document.getElementById("closePwaModal");
+    const pwaConfirmBtn = document.getElementById("pwaConfirmBtn");
+
+    pwaHelpBtn.addEventListener("click", () => pwaModal.classList.remove("hidden"));
+    closePwaModal.addEventListener("click", () => pwaModal.classList.add("hidden"));
+    pwaConfirmBtn.addEventListener("click", () => pwaModal.classList.add("hidden"));
+    pwaModal.addEventListener("click", (e) => {
+      if (e.target === pwaModal) pwaModal.classList.add("hidden");
+    });
+
+    // 초기 실행
+    renderKeywordChips();
+    updateBookmarkBadge();
+    renderBreaking();
+    renderFeed();
+  </script>
+</body>
+</html>
