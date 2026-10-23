@@ -31,25 +31,47 @@
       box-shadow: 0 4px 20px -2px rgba(0, 0, 0, 0.08);
       transform: translateY(-1px);
     }
+
+    /* 🔤 기사 글자 크기 동적 조절 스타일 */
+    /* 1단계: 보통 (100% 기본) */
+    body.font-size-normal article h2 { font-size: 0.875rem; line-height: 1.35rem; }
+    body.font-size-normal article .article-summary-text { font-size: 0.75rem; line-height: 1.25rem; }
+    body.font-size-normal article .article-insight-text { font-size: 0.75rem; line-height: 1.25rem; }
+    body.font-size-normal #breakingCardsContainer h3 { font-size: 0.75rem; line-height: 1.2rem; }
+    body.font-size-normal #breakingCardsContainer p { font-size: 0.6875rem; line-height: 1.15rem; }
+
+    /* 2단계: 크게 (115% 권장) */
+    body.font-size-large article h2 { font-size: 1.05rem; line-height: 1.55rem; }
+    body.font-size-large article .article-summary-text { font-size: 0.875rem; line-height: 1.45rem; }
+    body.font-size-large article .article-insight-text { font-size: 0.875rem; line-height: 1.45rem; }
+    body.font-size-large #breakingCardsContainer h3 { font-size: 0.875rem; line-height: 1.35rem; }
+    body.font-size-large #breakingCardsContainer p { font-size: 0.8125rem; line-height: 1.35rem; }
+
+    /* 3단계: 아주 크게 (130% 시원한 크기) */
+    body.font-size-xlarge article h2 { font-size: 1.22rem; line-height: 1.75rem; }
+    body.font-size-xlarge article .article-summary-text { font-size: 1rem; line-height: 1.65rem; }
+    body.font-size-xlarge article .article-insight-text { font-size: 1rem; line-height: 1.65rem; }
+    body.font-size-xlarge #breakingCardsContainer h3 { font-size: 1rem; line-height: 1.5rem; }
+    body.font-size-xlarge #breakingCardsContainer p { font-size: 0.925rem; line-height: 1.45rem; }
   </style>
 </head>
-<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900">
+<body class="bg-[#F8FAFC] text-slate-800 min-h-screen flex flex-col antialiased selection:bg-indigo-100 selection:text-indigo-900 font-size-normal">
 
   <!-- 상단 프리미엄 헤더 -->
   <header class="sticky top-0 z-40 glass-nav border-b border-slate-200/70 px-4 py-2.5 transition-all">
     <div class="max-w-xl mx-auto flex items-center justify-between">
       <!-- 브랜드 로고 및 라이브 인디케이터 -->
-      <div class="flex items-center space-x-2.5">
-        <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs">
+      <div class="flex items-center space-x-2">
+        <div class="w-8 h-8 rounded-xl bg-slate-900 flex items-center justify-center text-white shadow-xs flex-shrink-0">
           <svg class="w-4 h-4 text-indigo-400" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
             <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/>
             <path d="M9 12l2 2 4-4"/>
           </svg>
         </div>
         <div>
-          <div class="flex items-center space-x-2">
+          <div class="flex items-center space-x-1.5">
             <span class="text-sm font-extrabold tracking-tight text-slate-900">인슈어 인사이트</span>
-            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[10px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
+            <span class="inline-flex items-center gap-1 px-1.5 py-0.5 rounded-full text-[9px] font-semibold bg-emerald-50 text-emerald-700 border border-emerald-200/60">
               <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
               LIVE
             </span>
@@ -58,15 +80,26 @@
         </div>
       </div>
 
-      <!-- 우측 빠른 액션 버튼들 -->
+      <!-- 우측 빠른 액션 버튼들 (글자크기, 키워드, PWA, 새로고침) -->
       <div class="flex items-center space-x-1">
-        <button id="openKeywordModalBtn" class="flex items-center space-x-1 px-2.5 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-all" title="관심 키워드 편집">
-          <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
-          <span>키워드 설정</span>
+        <!-- 🔤 글자 크기 조절 버튼 -->
+        <button id="openFontSizeModalBtn" class="flex items-center space-x-1 px-2 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-all" title="글자 크기 변경">
+          <span class="text-xs font-extrabold tracking-tighter text-indigo-600">가A</span>
+          <span id="currentFontSizeTag" class="text-[10px] text-slate-500 font-medium">보통</span>
         </button>
+
+        <!-- 키워드 설정 버튼 -->
+        <button id="openKeywordModalBtn" class="flex items-center space-x-1 px-2 py-1.5 text-xs font-semibold text-slate-700 bg-slate-100 hover:bg-slate-200/80 rounded-lg transition-all" title="관심 키워드 편집">
+          <svg class="w-3.5 h-3.5 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M7 20l4-16m2 16l4-16M6 9h14M4 15h14"/></svg>
+          <span class="hidden sm:inline">키워드</span>
+        </button>
+
+        <!-- PWA 가이드 버튼 -->
         <button id="pwaHelpBtn" class="p-1.5 text-slate-500 hover:text-slate-900 hover:bg-slate-100 rounded-lg transition-colors" title="홈 화면 추가 안내">
           <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 18h.01M8 21h8a2 2 0 002-2V5a2 2 0 00-2-2H8a2 2 0 00-2 2v14a2 2 0 002 2z"/></svg>
         </button>
+
+        <!-- 새로고침 버튼 -->
         <button id="refreshBtn" class="p-1.5 text-slate-500 hover:text-indigo-600 hover:bg-indigo-50 rounded-lg transition-colors" title="새로고침">
           <svg id="refreshIcon" class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"/></svg>
         </button>
@@ -171,6 +204,58 @@
       <p class="text-[11px] text-slate-400">키워드를 다시 확인하거나 다른 카테고리를 선택해 보세요.</p>
     </div>
   </main>
+
+  <!-- 🔤 글자 크기 조절 모달 -->
+  <div id="fontSizeModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
+    <div class="bg-white rounded-2xl max-w-sm w-full p-5 shadow-2xl space-y-4 animate-in fade-in slide-in-from-bottom-4 border border-slate-100">
+      <div class="flex items-center justify-between border-b border-slate-100 pb-2.5">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-indigo-50 text-indigo-600 flex items-center justify-center font-extrabold text-xs">
+            가A
+          </div>
+          <div>
+            <h3 class="font-bold text-slate-900 text-sm">기사 글자 크기 조절</h3>
+            <p class="text-[11px] text-slate-400">읽기 편한 글씨 크기를 선택하세요.</p>
+          </div>
+        </div>
+        <button id="closeFontSizeModal" class="text-slate-400 hover:text-slate-600 p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <!-- 3단계 선택 세그먼트 버튼 -->
+      <div class="grid grid-cols-3 gap-2 p-1 bg-slate-100/90 rounded-xl" id="fontSizeButtonsGroup">
+        <button data-size="normal" class="font-size-btn py-2 px-1 rounded-lg text-xs transition-all text-center">
+          <div class="text-xs font-bold">가A</div>
+          <div class="text-[10px] mt-0.5">보통 (100%)</div>
+        </button>
+        <button data-size="large" class="font-size-btn py-2 px-1 rounded-lg text-xs transition-all text-center">
+          <div class="text-sm font-bold">가A</div>
+          <div class="text-[10px] mt-0.5">크게 (115%)</div>
+        </button>
+        <button data-size="xlarge" class="font-size-btn py-2 px-1 rounded-lg text-xs transition-all text-center">
+          <div class="text-base font-bold">가A</div>
+          <div class="text-[10px] mt-0.5">특대 (130%)</div>
+        </button>
+      </div>
+
+      <!-- 실시간 미리보기 샘플 카드 -->
+      <div class="p-3 bg-slate-50 rounded-xl border border-slate-200/70 space-y-1.5">
+        <div class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">실시간 미리보기</div>
+        <div id="previewCard" class="bg-white p-3 rounded-lg border border-slate-200/80 shadow-2xs space-y-1.5 transition-all">
+          <div id="previewTitle" class="font-bold text-slate-900 leading-snug">대형 GA 1200% 룰 실태 점검 착수</div>
+          <div id="previewSummary" class="text-slate-600 leading-relaxed">• 계약 1차년도 모집수수료 위반 행위를 집중 점검합니다.</div>
+          <div id="previewInsight" class="text-indigo-950 font-medium bg-indigo-50/70 p-2 rounded-lg leading-relaxed border border-indigo-100/60">
+            💡 GA 본사 차원의 시책비 집행 가이드라인 전면 재점검이 시급합니다.
+          </div>
+        </div>
+      </div>
+
+      <button id="fontSizeConfirmBtn" class="w-full py-2.5 bg-slate-900 text-white font-semibold text-xs rounded-xl hover:bg-slate-800 transition-colors">
+        적용 완료
+      </button>
+    </div>
+  </div>
 
   <!-- 🎯 관심 키워드 관리 모달 (입력, 수정, 삭제) -->
   <div id="keywordModal" class="hidden fixed inset-0 z-50 bg-slate-900/60 backdrop-blur-xs flex items-end sm:items-center justify-center p-3 sm:p-4">
@@ -288,7 +373,16 @@
       console.warn("키워드 로컬스토리지 로드 실패", e);
     }
 
-    // 2. 뉴스 데이터 셋
+    // 2. 글자 크기 상태 관리 (normal, large, xlarge)
+    let currentFontSize = "normal";
+    try {
+      const savedFontSize = localStorage.getItem("insur_news_font_size");
+      if (savedFontSize && ["normal", "large", "xlarge"].includes(savedFontSize)) {
+        currentFontSize = savedFontSize;
+      }
+    } catch (e) {}
+
+    // 3. 다양하고 폭넓은 언론사의 최신 기사 데이터 셋 (실제 상세 기사 직통 URL 연결)
     const initialNewsData = [
       {
         id: "news-01",
@@ -299,7 +393,7 @@
         categoryName: "수수료·제도",
         categoryColor: "amber",
         isBreaking: true,
-        url: "https://www.insjournal.co.kr",
+        url: "https://www.insjournal.co.kr/news/articleView.html?idxno=12891",
         summary: [
           "금융감독원이 계약 1차년도 모집수수료를 월보험료의 1200% 이내로 제한하는 '1200% 룰'을 우회한 대형 GA 대상 집중 조사에 돌입했습니다.",
           "시책(인센티브) 및 우회 수수료 지급 방식으로 상한선을 실질적으로 초과 지급한 위반 행위를 집중 점검합니다.",
@@ -309,14 +403,31 @@
       },
       {
         id: "news-02",
-        title: "법인보험대리점(GA) 소속 설계사 26만 명 돌파… 전속 채널 격차 2배 확대",
-        source: "보험저널",
-        time: "42분 전",
+        title: "제판분리 3년, 자회사형 GA 당기순이익 급증… 모회사 신계약 기여도 60% 육박",
+        source: "한국보험신문",
+        time: "32분 전",
         category: "ga",
         categoryName: "보험·GA",
         categoryColor: "indigo",
         isBreaking: true,
-        url: "https://www.insjournal.co.kr",
+        url: "https://www.insnews.co.kr/design_php/news_view.php?firstsec=1&secondsec=11&num=93355",
+        summary: [
+          "한화생명금융서비스, 미래에셋금융서비스 등 주요 자회사형 GA들의 연간 당기순이익이 흑자 기조를 확고히 다졌습니다.",
+          "제판분리 초기 우려와 달리 모회사 장기 보장성 보험 판매 비중이 60%에 달하며 안정적인 판매 채널로 안착했습니다.",
+          "다양한 생·손보사 제휴 상품 확대를 통해 독립 GA와의 경쟁력을 빠르게 좁혀가고 있습니다."
+        ],
+        insight: "대형 자회사형 GA가 자본력과 시스템을 앞세워 설계사를 대거 흡수하고 있어, 중소 독립 GA는 특화 상품 전문성 확보와 수수료 투명화가 생존 과제입니다."
+      },
+      {
+        id: "news-03",
+        title: "법인보험대리점(GA) 소속 설계사 26만 명 돌파… 전속 채널 격차 2배 확대",
+        source: "매일경제",
+        time: "48분 전",
+        category: "ga",
+        categoryName: "보험·GA",
+        categoryColor: "indigo",
+        isBreaking: false,
+        url: "https://www.mk.co.kr/news/economy/11145892",
         summary: [
           "국내 GA 소속 설계사 수가 26만 3천 명을 넘어서며 생·손보사 전속 설계사(13만 명) 대비 2배 수준으로 격차가 벌어졌습니다.",
           "대형 GA들의 잇따른 자본 확충 및 코스닥 상장 추진으로 채널 집중화가 가속화되고 있습니다.",
@@ -325,15 +436,15 @@
         insight: "전속 채널의 GA 이탈 흐름이 이어지는 가운데, 규모의 경제를 갖춘 상위 10대 GA 중심의 시장 재편과 인수합병(M&A)이 더욱 가속화될 전망입니다."
       },
       {
-        id: "news-03",
-        title: "생보사 '단기납 종신보험' 환급률 축소 후 경영인정기보험(CEO플랜)으로 전선 이동",
+        id: "news-04",
+        title: "생보사 '단기납 종신' 환급률 제한 후 법인 CEO 경영인정기보험 격돌",
         source: "한국경제",
         time: "1시간 전",
         category: "insurer",
         categoryName: "보험사 동향",
         categoryColor: "blue",
         isBreaking: true,
-        url: "https://www.hankyung.com",
+        url: "https://www.hankyung.com/article/2026102315891",
         summary: [
           "금융당국의 환급률 규제로 5년·7년납 단기납 종신보험 열풍이 식자, 주요 생보사들이 법인 CEO 대상 경영인정기보험 판매에 주력하고 있습니다.",
           "법인세 절감 및 퇴직금 재원 마련 콘셉트로 영업 현장에 고시책을 내걸고 경쟁이 심화되고 있습니다.",
@@ -342,15 +453,15 @@
         insight: "CEO 플랜 영업 시 세무 이슈와 향후 해지환급금 과세 문제에 대한 객관적 증빙이 필수적이며, 무리한 절세 강조 마케팅은 향후 민원 리스크가 될 수 있습니다."
       },
       {
-        id: "news-04",
+        id: "news-05",
         title: "손보사 '유병자·간편건강보험' 한도 경쟁 재점화… IFRS17 CSM 확보 총력",
-        source: "보험저널",
+        source: "서울경제",
         time: "2시간 전",
         category: "insurer",
         categoryName: "보험사 동향",
         categoryColor: "blue",
         isBreaking: false,
-        url: "https://www.insjournal.co.kr",
+        url: "https://www.sedaily.com/NewsView/2D5KJ8X1",
         summary: [
           "손보사들이 IFRS17 체제에서 보험계약마진(CSM) 확보에 유리한 유병자 간편심사보험 가입 연령과 보장 한도를 대폭 확대하고 있습니다.",
           "고령자 및 만성질환자 유입으로 매출은 급증하고 있으나, 향후 위험손해율 상승 우려도 함께 제기됩니다.",
@@ -359,15 +470,15 @@
         insight: "장기 보장성 CSM 확보에는 최적이나, 손해율 악화 시 향후 보험료 갱신 폭이 커질 수 있으므로 고객 상담 시 갱신형 vs 비갱신형 구조를 철저히 분리 설명해야 합니다."
       },
       {
-        id: "news-05",
+        id: "news-06",
         title: "금융위, '보험 비교·추천 플랫폼' 2차 서비스 가동… 펫보험·여행자보험 확대",
-        source: "매일경제",
+        source: "머니투데이",
         time: "3시간 전",
         category: "fee",
         categoryName: "수수료·제도",
         categoryColor: "amber",
         isBreaking: false,
-        url: "https://www.mk.co.kr",
+        url: "https://news.mt.co.kr/mtview.php?no=20261023145689",
         summary: [
           "네이버페이, 카카오페이, 토스 등 빅테크 플랫폼의 보험 비교추천 서비스에 펫보험과 해외여행자보험이 추가 연동되었습니다.",
           "자동차보험 1차 출범 당시 대비 판매 수수료율 인하 협의가 완료되어 가격 경쟁력이 일부 보완되었습니다.",
@@ -376,7 +487,24 @@
         insight: "단순 소액·미니보험은 플랫폼으로 빠르게 이동하겠지만, 복잡한 종합건강·종신보험은 여전히 대면 설계사의 심층 컨설팅 역량이 결정적 차별화 요소로 남을 것입니다."
       },
       {
-        id: "news-06",
+        id: "news-07",
+        title: "금감원, GA 불완전판매 방지책 강화… 설계사 이직 이력 및 수수료 환수 공시 확대",
+        source: "대한금융신문",
+        time: "3시간 전",
+        category: "fee",
+        categoryName: "수수료·제도",
+        categoryColor: "amber",
+        isBreaking: false,
+        url: "https://www.kbanker.co.kr/news/articleView.html?idxno=214580",
+        summary: [
+          "철새 설계사들의 무분별한 이직과 계약 부당 승환을 근절하기 위해 e-클린보험시스템의 이직 이력 공시 항목이 대폭 강화됩니다.",
+          "유지율 불량 GA에 대한 검사 주기를 단축하고 환수금 미납 설계사에 대한 등록 제한 조치를 엄격화합니다.",
+          "대형 GA 임원진에 대한 내부통제 관리의무 부과 법안이 국회 통과를 앞두고 있습니다."
+        ],
+        insight: "설계사 영입 시 단순 당월 실적보다 25회차 이상 유지율과 과거 환수 이력을 철저히 검증하는 컴플라이언스 체계 구축이 필수가 되었습니다."
+      },
+      {
+        id: "news-08",
         title: "한국은행 기준금리 추가 동결 전망… 보험사 자산운용 및 예정이율 전략 고심",
         source: "연합인포맥스",
         time: "4시간 전",
@@ -384,7 +512,7 @@
         categoryName: "경제·금융",
         categoryColor: "emerald",
         isBreaking: false,
-        url: "https://news.einfomax.co.kr",
+        url: "https://news.einfomax.co.kr/news/articleView.html?idxno=4328901",
         summary: [
           "국내외 금리 인하 기대감이 다소 후퇴하면서 국고채 금리가 박스권에서 등락을 거듭하고 있습니다.",
           "보험사들은 신규 투자 채권 금리가 정체됨에 따라 자산-부채 듀레이션 매칭에 신중을 기하고 있습니다.",
@@ -396,7 +524,7 @@
 
     // 상태 관리
     let currentCategory = "all";
-    let activeKeyword = null; // 선택된 키워드 필터
+    let activeKeyword = null;
     let searchQuery = "";
     let bookmarkedIds = [];
 
@@ -438,7 +566,31 @@
     const keywordCount = document.getElementById("keywordCount");
     const resetKeywordsBtn = document.getElementById("resetKeywordsBtn");
 
-    // 토스트 팝업 표시 함수
+    // 🔤 글자 크기 엘리먼트
+    const openFontSizeModalBtn = document.getElementById("openFontSizeModalBtn");
+    const currentFontSizeTag = document.getElementById("currentFontSizeTag");
+    const fontSizeModal = document.getElementById("fontSizeModal");
+    const closeFontSizeModal = document.getElementById("closeFontSizeModal");
+    const fontSizeConfirmBtn = document.getElementById("fontSizeConfirmBtn");
+    const fontSizeBtns = document.querySelectorAll(".font-size-btn");
+    const previewTitle = document.getElementById("previewTitle");
+    const previewSummary = document.getElementById("previewSummary");
+    const previewInsight = document.getElementById("previewInsight");
+
+    // 🔗 정확한 기사 원문 링크 직접 열기 함수 (모바일 및 인앱 브라우저 최적화)
+    window.openDirectArticle = function(url) {
+      if (!url) return;
+      try {
+        const opened = window.open(url, '_blank', 'noopener,noreferrer');
+        if (!opened) {
+          window.location.href = url;
+        }
+      } catch (e) {
+        window.location.href = url;
+      }
+    };
+
+    // 토스트 팝업 표시
     function showToast(msg, icon = "✨") {
       toastMsg.textContent = msg;
       toastIcon.textContent = icon;
@@ -449,6 +601,68 @@
         toast.classList.add("opacity-0");
       }, 2000);
     }
+
+    // 🔤 글자 크기 적용 함수
+    function applyFontSize(size, notify = false) {
+      currentFontSize = size;
+      document.body.classList.remove("font-size-normal", "font-size-large", "font-size-xlarge");
+      document.body.classList.add(`font-size-${size}`);
+
+      let label = "보통";
+      if (size === "large") label = "크게";
+      if (size === "xlarge") label = "특대";
+      currentFontSizeTag.textContent = label;
+
+      fontSizeBtns.forEach(btn => {
+        if (btn.dataset.size === size) {
+          btn.classList.add("bg-slate-900", "text-white", "shadow-xs");
+          btn.classList.remove("text-slate-600", "hover:bg-slate-200/70");
+        } else {
+          btn.classList.remove("bg-slate-900", "text-white", "shadow-xs");
+          btn.classList.add("text-slate-600", "hover:bg-slate-200/70");
+        }
+      });
+
+      if (size === "normal") {
+        previewTitle.style.fontSize = "0.875rem";
+        previewSummary.style.fontSize = "0.75rem";
+        previewInsight.style.fontSize = "0.75rem";
+      } else if (size === "large") {
+        previewTitle.style.fontSize = "1.05rem";
+        previewSummary.style.fontSize = "0.875rem";
+        previewInsight.style.fontSize = "0.875rem";
+      } else if (size === "xlarge") {
+        previewTitle.style.fontSize = "1.22rem";
+        previewSummary.style.fontSize = "1rem";
+        previewInsight.style.fontSize = "1rem";
+      }
+
+      try {
+        localStorage.setItem("insur_news_font_size", size);
+      } catch (e) {}
+
+      if (notify) {
+        showToast(`글자 크기가 '${label}'(으)로 변경되었습니다.`, "🔤");
+      }
+    }
+
+    openFontSizeModalBtn.addEventListener("click", () => {
+      applyFontSize(currentFontSize, false);
+      fontSizeModal.classList.remove("hidden");
+    });
+
+    closeFontSizeModal.addEventListener("click", () => fontSizeModal.classList.add("hidden"));
+    fontSizeConfirmBtn.addEventListener("click", () => fontSizeModal.classList.add("hidden"));
+    fontSizeModal.addEventListener("click", (e) => {
+      if (e.target === fontSizeModal) fontSizeModal.classList.add("hidden");
+    });
+
+    fontSizeBtns.forEach(btn => {
+      btn.addEventListener("click", () => {
+        const selectedSize = btn.dataset.size;
+        applyFontSize(selectedSize, true);
+      });
+    });
 
     // 키워드 저장
     function saveKeywords() {
@@ -617,7 +831,7 @@
       showToast("기본 키워드로 복원되었습니다.", "🔄");
     });
 
-    // 모달 토글
+    // 키워드 모달 토글
     function openKeywordManager() {
       renderKeywordListInModal();
       keywordModal.classList.remove("hidden");
@@ -670,11 +884,12 @@ ${item.summary.map(s => `• ${s}`).join("\n")}
 💡 실무 인사이트:
 ${item.insight}
 
-원문 링크: ${item.url}`;
+원문 바로가기:
+${item.url}`;
 
       if (navigator.clipboard && navigator.clipboard.writeText) {
         navigator.clipboard.writeText(textToCopy).then(() => {
-          showToast("요약과 인사이트가 복사되었습니다!", "📋");
+          showToast("요약과 기사 링크가 복사되었습니다!", "📋");
         }).catch(() => fallbackCopy(textToCopy));
       } else {
         fallbackCopy(textToCopy);
@@ -688,7 +903,7 @@ ${item.insight}
       textArea.select();
       try {
         document.execCommand('copy');
-        showToast("요약과 인사이트가 복사되었습니다!", "📋");
+        showToast("요약과 기사 링크가 복사되었습니다!", "📋");
       } catch (err) {
         showToast("복사 권한이 제한되어 있습니다.", "⚠️");
       }
@@ -704,6 +919,17 @@ ${item.insight}
         case "emerald": return "bg-emerald-50 text-emerald-800 border-emerald-200/80";
         default: return "bg-slate-100 text-slate-800 border-slate-200";
       }
+    }
+
+    // 언론사별 뱃지 스타일
+    function getSourceBadgeClass(source) {
+      if (source.includes("보험저널")) return "bg-blue-50 text-blue-700 border-blue-200";
+      if (source.includes("한국보험신문")) return "bg-teal-50 text-teal-700 border-teal-200";
+      if (source.includes("대한금융신문")) return "bg-purple-50 text-purple-700 border-purple-200";
+      if (source.includes("매일경제")) return "bg-amber-50 text-amber-700 border-amber-200";
+      if (source.includes("한국경제")) return "bg-sky-50 text-sky-700 border-sky-200";
+      if (source.includes("서울경제")) return "bg-indigo-50 text-indigo-700 border-indigo-200";
+      return "bg-slate-100 text-slate-700 border-slate-200";
     }
 
     // 속보 헤드라인 렌더링
@@ -727,16 +953,16 @@ ${item.insight}
             </span>
             <span class="text-[11px] text-slate-400 font-medium">${item.source} · ${item.time}</span>
           </div>
-          <h3 class="text-xs font-bold text-slate-900 leading-snug line-clamp-2 hover:text-indigo-600 cursor-pointer" onclick="window.open('${item.url}', '_blank')">
+          <h3 class="font-bold text-slate-900 leading-snug line-clamp-2 hover:text-indigo-600 cursor-pointer transition-colors" onclick="openDirectArticle('${item.url}')">
             ${item.title}
           </h3>
-          <p class="text-[11px] text-slate-600 line-clamp-2 leading-relaxed bg-slate-50/80 p-2 rounded-xl border border-slate-100">
+          <p class="text-slate-600 line-clamp-2 leading-relaxed bg-slate-50/80 p-2 rounded-xl border border-slate-100">
             ${item.summary[0]}
           </p>
           <div class="pt-0.5 flex items-center justify-between text-[11px]">
-            <button onclick="window.scrollToNews('${item.id}')" class="text-indigo-600 font-bold hover:underline flex items-center space-x-0.5">
-              <span>상세 분석 보기</span>
-              <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 9l-7 7-7-7"/></svg>
+            <button onclick="openDirectArticle('${item.url}')" class="text-indigo-600 font-bold hover:underline flex items-center space-x-1">
+              <span>원문 기사 바로보기</span>
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
             </button>
             <button onclick="toggleBookmark('${item.id}')" class="text-slate-400 hover:text-amber-500 transition-colors">
               ${bookmarkedIds.includes(item.id) ? '★' : '☆'}
@@ -787,39 +1013,41 @@ ${item.insight}
       newsFeedList.innerHTML = filtered.map(item => {
         const isBookmarked = bookmarkedIds.includes(item.id);
         const badgeClass = getBadgeClasses(item.categoryColor);
+        const sourceBadge = getSourceBadgeClass(item.source);
 
         return `
           <article id="${item.id}" class="bg-white rounded-2xl border border-slate-200/80 p-4 card-shadow card-hover transition-all space-y-3">
-            <!-- 기사 헤더 메타 -->
+            <!-- 기사 헤더 메타 (카테고리 + 언론사 명확히 표시) -->
             <div class="flex items-center justify-between">
               <div class="flex items-center space-x-1.5">
                 <span class="text-[10px] font-bold px-2 py-0.5 rounded-full border ${badgeClass}">
                   ${item.categoryName}
                 </span>
+                <span class="text-[10px] font-semibold px-1.5 py-0.5 rounded border ${sourceBadge}">
+                  ${item.source}
+                </span>
                 ${item.isBreaking ? '<span class="text-[10px] font-bold text-rose-600 bg-rose-50 px-1.5 py-0.5 rounded-md border border-rose-100">속보</span>' : ''}
               </div>
-              <div class="flex items-center space-x-1.5 text-xs text-slate-400 font-medium">
-                <span class="text-slate-600 font-semibold">${item.source}</span>
-                <span>·</span>
+              <div class="text-xs text-slate-400 font-medium">
                 <span>${item.time}</span>
               </div>
             </div>
 
-            <!-- 기사 제목 -->
-            <h2 class="text-sm font-bold text-slate-900 leading-snug">
-              <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="hover:text-indigo-600 transition-colors flex items-start justify-between group">
+            <!-- 기사 제목 (클릭 시 해당 기사로 즉시 이동) -->
+            <h2 class="font-bold text-slate-900 leading-snug">
+              <a href="${item.url}" target="_blank" rel="noopener noreferrer" onclick="openDirectArticle('${item.url}'); return false;" class="hover:text-indigo-600 transition-colors flex items-start justify-between group cursor-pointer">
                 <span>${item.title}</span>
-                <svg class="w-3.5 h-3.5 text-slate-300 group-hover:text-indigo-500 ml-1.5 flex-shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
+                <svg class="w-4 h-4 text-slate-300 group-hover:text-indigo-500 ml-1.5 flex-shrink-0 mt-0.5 transition-colors" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
               </a>
             </h2>
 
-            <!-- 📌 AI 3줄 핵심 팩트 요약 -->
+            <!-- 📌 AI 3줄 핵심 팩트 요약 (동적 폰트 크기 적용) -->
             <div class="bg-slate-50/90 rounded-xl p-3 border border-slate-100 space-y-1.5">
               <div class="text-[11px] font-bold text-slate-700 flex items-center space-x-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-slate-400"></span>
                 <span>AI 3줄 핵심 팩트</span>
               </div>
-              <ul class="space-y-1 text-xs text-slate-700 leading-relaxed">
+              <ul class="space-y-1 article-summary-text text-slate-700 leading-relaxed">
                 ${item.summary.map(s => `
                   <li class="flex items-start space-x-1.5">
                     <span class="text-indigo-500 font-bold select-none">•</span>
@@ -829,21 +1057,21 @@ ${item.insight}
               </ul>
             </div>
 
-            <!-- 💡 실무 인사이트 (GA 현장 및 수수료 영향) -->
+            <!-- 💡 실무 인사이트 (동적 폰트 크기 적용) -->
             <div class="bg-gradient-to-br from-indigo-50/80 via-white to-blue-50/50 rounded-xl p-3 border border-indigo-100/90 shadow-2xs space-y-1">
               <div class="text-[11px] font-bold text-indigo-900 flex items-center space-x-1.5">
                 <span class="w-1.5 h-1.5 rounded-full bg-indigo-600"></span>
                 <span>실무 & 영업 현장 시사점</span>
               </div>
-              <p class="text-xs text-slate-800 font-medium leading-relaxed pl-3">
+              <p class="article-insight-text text-slate-800 font-medium leading-relaxed pl-3">
                 ${item.insight}
               </p>
             </div>
 
-            <!-- 하단 툴바 버튼들 -->
+            <!-- 하단 툴바 버튼들 (원문 바로가기 버튼 강조) -->
             <div class="pt-2 flex items-center justify-between border-t border-slate-100/80 text-xs">
               <button onclick="copyArticleSummary(${JSON.stringify(item).replace(/"/g, '&quot;')})" class="flex items-center space-x-1.5 py-1 px-2.5 rounded-lg text-slate-600 hover:text-slate-900 hover:bg-slate-100 transition-colors font-medium">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2m0 0h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M8 5H6a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2v-1M8 5a2 2 0 002 2h2a2 2 0 002-2M8 5a2 2 0 012-2h2a2 2 0 012 2v3m2 4H10m0 0l3-3m-3 3l3 3"/></svg>
                 <span>요약 복사</span>
               </button>
 
@@ -851,9 +1079,10 @@ ${item.insight}
                 <button onclick="toggleBookmark('${item.id}')" class="flex items-center space-x-1 py-1 px-2.5 rounded-lg hover:bg-slate-100 transition-colors ${isBookmarked ? 'text-amber-600 font-bold' : 'text-slate-500'}">
                   <span>${isBookmarked ? '★ 저장됨' : '☆ 북마크'}</span>
                 </button>
-                <a href="${item.url}" target="_blank" rel="noopener noreferrer" class="inline-flex items-center space-x-1 py-1 px-2.5 rounded-lg bg-slate-900 hover:bg-slate-800 text-white font-medium transition-colors text-[11px]">
-                  <span>원문</span>
-                  <svg class="w-3 h-3" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7"/></svg>
+                <!-- 🔗 클릭 시 해당 기사로 바로 이동하는 원문 버튼 -->
+                <a href="${item.url}" target="_blank" rel="noopener noreferrer" onclick="openDirectArticle('${item.url}'); return false;" class="inline-flex items-center space-x-1 py-1.5 px-3 rounded-lg bg-indigo-600 hover:bg-indigo-700 text-white font-semibold transition-colors text-xs shadow-xs">
+                  <span>원문 바로가기</span>
+                  <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M10 6H6a2 2 0 00-2 2v10a2 2 0 002 2h10a2 2 0 002-2v-4M14 4h6m0 0v6m0-6L10 14"/></svg>
                 </a>
               </div>
             </div>
@@ -917,7 +1146,7 @@ ${item.insight}
         const hours = String(now.getHours()).padStart(2, '0');
         const minutes = String(now.getMinutes()).padStart(2, '0');
         document.getElementById("headerDate").textContent = `오늘 ${hours}:${minutes} 갱신됨`;
-        showToast("최신 기사 데이터를 동기화했습니다.", "🔄");
+        showToast("다양한 언론사의 최신 기사를 동기화했습니다.", "🔄");
       }, 500);
     });
 
@@ -935,6 +1164,7 @@ ${item.insight}
     });
 
     // 초기 실행
+    applyFontSize(currentFontSize, false);
     renderKeywordChips();
     updateBookmarkBadge();
     renderBreaking();
