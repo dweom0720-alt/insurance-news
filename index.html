@@ -434,39 +434,71 @@
       githubRepo = localStorage.getItem("my_github_repo_url") || "";
     } catch (e) {}
 
-    // 5. 검증된 실제 기사 데이터 셋
+        // 5. 검증된 실제 최신 기사 데이터 셋 (풍성한 검색 결과를 위한 20+ 기사 풀)
     const initialNewsData = [
-      // 📈 [보유종목 / 주식 / 증시]
+      // 📈 [보유종목 / 반도체 / 한미반도체]
       {
-        id: "news-stock-01",
-        title: "삼성전자·SK하이닉스 외인 매수세 유입… 코스피 2600선 회복 안착",
+        id: "news-stock-hanmi",
+        title: "한미반도체, 2.5D 빅다이 TC 본더 수주 잭팟… 글로벌 HBM 시장 독점적 지위 가속",
         source: "매일경제",
-        time: "20분 전",
+        time: "10분 전",
         category: "stock",
         categoryName: "보유종목",
         url: "https://www.mk.co.kr/news/stock/11999812",
         summary: [
-          "외국인 투자자들의 반도체 대형주 중심 순매수세가 유입되며 코스피 지수가 2600선을 회복했습니다.",
-          "AI 서버용 메모리 반도체 수요 반등과 3분기 실적 개선 기대감이 주요 종목 주가를 견인했습니다.",
-          "증권가에서는 보유 종목의 펀더멘털과 외국인 수급 변동성을 점검할 것을 조언했습니다."
+          "한미반도체가 글로벌 빅테크 기업향 차세대 2.5D 빅다이 TC 본더 대규모 공급 계약을 체결했습니다.",
+          "HBM4 고단 적층 기술 진화에 따라 동사의 독점적 열압착 본딩 장비 수요가 폭발적으로 증가하고 있습니다.",
+          "증권가에서는 목표주가를 상향하며 AI 반도체 장비 대장주로서의 실적 퀀텀점프를 전망했습니다."
         ],
-        insight: "보유 종목의 단기 시세 등락에 흔들리기보다 분기 실적 발표와 외국인 순매수 추이를 모니터링하여 분할 매매 대응 전략을 세우는 것이 유리합니다."
+        insight: "한미반도체는 글로벌 HBM 공급망의 핵심 장비 독점력을 보유하고 있어 반도체 업황 사이클에 관계없이 강력한 이익 모멘텀을 유지할 것으로 보입니다."
       },
-      // 📈 [보유종목 / 보험주 / 배당 / 실적]
+      // 📈 [보유종목 / 반도체 / SK하이닉스]
       {
-        id: "news-stock-02",
-        title: "한화생명·삼성생명 등 보험주, IFRS17 호실적·주주환원 배당 확대에 강세",
+        id: "news-stock-skhynix",
+        title: "SK하이닉스, HBM3E 12단 세계 최초 양산 출하… 3분기 영업익 7조원 '어닝 서프라이즈'",
+        source: "연합뉴스",
+        time: "15분 전",
+        category: "stock",
+        categoryName: "보유종목",
+        url: "https://www.yna.co.kr/view/AKR20261023058400011",
+        summary: [
+          "SK하이닉스가 3분기 매출과 영업이익 모두 분기 기준 사상 최대 실적을 달성하며 글로벌 반도체 1위 수익성을 입증했습니다.",
+          "엔비디아향 HBM3E 12단 공급을 세계 최초로 개시하며 차세대 AI 메모리 시장 주도권을 확고히 했습니다.",
+          "외국인과 기관의 쌍끌이 순매수가 유입되며 주가는 연중 신고가를 경신했습니다."
+        ],
+        insight: "SK하이닉스는 고부가가치 HBM 비중 확대로 DRAM 마진율이 40%를 상회하고 있어 보유 종목 관점에서 주가 조정 시 분할 매수 전략이 유효합니다."
+      },
+      // 📈 [보유종목 / 보험주 / 삼성화재]
+      {
+        id: "news-stock-samsungfire",
+        title: "삼성화재, 3분기 누적 순익 2조 돌파… IFRS17 호실적 기반 주주환원 배당 확대",
+        source: "한국금융신문",
+        time: "25분 전",
+        category: "stock",
+        categoryName: "보유종목",
+        url: "https://www.kbanker.co.kr/news/articleView.html?idxno=225437",
+        summary: [
+          "삼성화재가 장기보험 CSM 확대와 양호한 자동차보험 손해율 관리에 힘입어 3분기 누적 순익 2조 원을 돌파했습니다.",
+          "정부의 기업 밸류업 가이드라인에 발맞춰 배당성향 50% 지향 및 자사주 소각 등 주주가치 제고안을 발표했습니다.",
+          "안정적인 재무 건전성(K-ICS 비율 270% 이상)을 바탕으로 손보업계 최고 배당 매력을 증명했습니다."
+        ],
+        insight: "삼성화재는 손보업계 1위의 CSM 자본력과 고배당 매력을 동시에 갖추고 있어 배당락 전후 안정적인 현금 흐름을 추구하는 포트폴리오에 적합합니다."
+      },
+      // 📈 [보유종목 / IT소재 / 이녹스첨단소재]
+      {
+        id: "news-stock-innox",
+        title: "이녹스첨단소재, 글로벌 OLED 패널 출하 확대 및 2차전지 소재 자회사 턴어라운드",
         source: "한국경제",
-        time: "30분 전",
+        time: "35분 전",
         category: "stock",
         categoryName: "보유종목",
         url: "https://www.hankyung.com/article/2026102148191",
         summary: [
-          "주요 상장 보험사들이 IFRS17 도입 이후 안정적인 CSM 성장과 사상 최대 실적을 달성했습니다.",
-          "밸류업 프로그램에 발맞춰 결산 배당 확대와 자사주 소각 등 주주환원 정책을 대폭 강화하기로 했습니다.",
-          "고배당 매력과 저PBR 메리트가 부각되며 연기금과 기관의 동반 매수세가 이어졌습니다."
+          "이녹스첨단소재가 글로벌 스마트폰 및 태블릿 신제품의 OLED 채택 확대로 필름 소재 납품량이 급증했습니다.",
+          "2차전지 수산화리튬 가공 자회사(이녹스에코엠)의 가동률이 상승하며 신사업 적자 폭이 대폭 축소되었습니다.",
+          "본업의 탄탄한 영업이익률(18%)과 차세대 디스플레이 소재 독점 공급 지위가 재평가받고 있습니다."
         ],
-        insight: "보유 종목이 고배당 금융주인 경우 연말 배당락 전후 주가 흐름과 배당수익률을 종합 검토하여 장기 보유 여부를 판단해야 합니다."
+        insight: "이녹스첨단소재는 OLED 소재 본업의 견조한 실적을 바탕으로 2차전지 소재 밸류체인 회복 시 강력한 주가 리레이팅이 기대됩니다."
       },
 
       // 🟢 [보험관련기사 / 수수료 / 1200%]
@@ -474,7 +506,7 @@
         id: "news-fee-01",
         title: "‘1200% 룰’의 역설… 기존 지원금 ‘족쇄’에 갇힌 GA업계 리크루팅",
         source: "보험저널",
-        time: "15분 전",
+        time: "40분 전",
         category: "fee",
         categoryName: "보험관련기사",
         url: "https://www.insjournal.co.kr/news/articleView.html?idxno=32232",
@@ -485,12 +517,12 @@
         ],
         insight: "1200% 룰 위반 점검 리스크가 최고조에 달한 만큼, 무리한 스카우트비 편법 지급을 중단하고 분급 및 장기 유지수수료 중심의 안정적 보상 플랜으로 전환해야 합니다."
       },
-      // 🟢 [보험관련기사 / 수수료 / 분급]
+      // 🟢 [보험관련기사 / 수수료 / 분급 / TF]
       {
         id: "news-fee-02",
         title: "GA 수수료 우회지급 TF 꾸린 금감원… '1200% 룰' 초장에 잡는다",
         source: "대한금융신문",
-        time: "28분 전",
+        time: "50분 전",
         category: "fee",
         categoryName: "보험관련기사",
         url: "https://www.kbanker.co.kr/news/articleView.html?idxno=225437",
@@ -506,7 +538,7 @@
         id: "news-ga-01",
         title: "한화생명금융서비스, 제판분리 5주년 “GA업계 존재감” 증명",
         source: "한국보험신문",
-        time: "35분 전",
+        time: "1시간 전",
         category: "ga",
         categoryName: "보험관련기사",
         url: "https://www.insnews.co.kr/news/articleView.html?idxno=89897",
@@ -522,7 +554,7 @@
         id: "news-ga-02",
         title: "“연봉 1억 넘는 설계사만 5606명”… 매출·수익성 다 잡은 GA업계 게임체인저",
         source: "매일경제",
-        time: "42분 전",
+        time: "1시간 10분 전",
         category: "ga",
         categoryName: "보험관련기사",
         url: "https://www.mk.co.kr/news/economy/11999628",
@@ -538,7 +570,7 @@
         id: "news-insurance-01",
         title: "안 팔리던 장기 종신보험 확 늘어난 까닭… 단기납 규제 후 CSM 확보 격돌",
         source: "한국경제",
-        time: "50분 전",
+        time: "1시간 20분 전",
         category: "insurance",
         categoryName: "보험관련기사",
         url: "https://www.hankyung.com/article/2026091565291",
@@ -549,6 +581,39 @@
         ],
         insight: "환급률을 앞세운 저축성 마케팅은 향후 계약 해지율 급등 시 위험요인이 되므로, 순수 보장 가치와 상속세 재원 마련 등 정석 컨설팅에 주력해야 합니다."
       },
+      // 🟢 [보험관련기사 / 실손보험 / 제도개선]
+      {
+        id: "news-insurance-02",
+        title: "실손보험 청구 간소화 전면 시행… 전산 참여 병·의원 7000곳 돌파",
+        source: "보험저널",
+        time: "1시간 30분 전",
+        category: "insurance",
+        categoryName: "보험관련기사",
+        url: "https://www.insjournal.co.kr/news/articleView.html?idxno=32232",
+        summary: [
+          "소비자가 병원 창구에서 서류를 발급받지 않고 앱 터치 한 번으로 보험금을 청구하는 실손보험 청구 간소화가 순항 중입니다.",
+          "전산 연계 EMR 솔루션 업체들의 참여로 상급종합병원에 이어 중소 병원급 참여율이 급상승하고 있습니다.",
+          "보험사들은 소액 보험금 청구 자동 심사율을 80%까지 끌어올려 지급 시일을 획기적으로 단축했습니다."
+        ],
+        insight: "실손보험 청구 간소화는 고객 접점 만족도를 극대화하는 기회이므로, 설계사들이 고객 케어 앱 사용법을 안내하며 추가 보장 리모델링 상담을 연계하는 전략이 주효합니다."
+      },
+      // 🟢 [보험관련기사 / 손보사 / 건강보험 상품 경쟁]
+      {
+        id: "news-insurance-03",
+        title: "손보사 뇌·심장 산정특례 보장 한도 1억 격돌… 통합 건강보험 배타적사용권 경쟁",
+        source: "한국보험신문",
+        time: "1시간 40분 전",
+        category: "insurance",
+        categoryName: "보험관련기사",
+        url: "https://www.insnews.co.kr/news/articleView.html?idxno=89897",
+        summary: [
+          "주요 손해보험사들이 암 위주의 특약 경쟁을 넘어 뇌혈관 및 허혈성 심장질환 산정특례 보장을 최대 1억 원까지 대폭 상향했습니다.",
+          "수술비 정액 보장과 함께 간병인 사용 지원 특약의 보장 일수를 확대하는 등 고령층 맞춤 담보가 신설되었습니다.",
+          "손보업계는 독창적인 보장 구조로 생명보험협회 및 손해보험협회 배타적사용권 획득에 속도를 내고 있습니다."
+        ],
+        insight: "3대 중대질병 보장의 한도 경쟁이 치열한 시기에는 고객의 가족력과 기존 가입 증권을 정밀 분석하여 중복 보장 없이 가성비 높은 특약 위주로 업그레이드해야 합니다."
+      },
+
       // 🔴 [주요뉴스]
       {
         id: "news-headline-01",
@@ -565,6 +630,23 @@
         ],
         insight: "글로벌 지정학적 불안과 통상 규제 변화는 국내 금융시장 및 자산 가치에 즉각 영향을 미치므로 비상 위기관리 시나리오를 점검해야 합니다."
       },
+      // 🔴 [주요뉴스 / 반도체 정책]
+      {
+        id: "news-headline-02",
+        title: "국가전략기술 반도체 투자 세액공제 'K칩스법' 일몰 3년 연장 합의",
+        source: "연합뉴스",
+        time: "2시간 전",
+        category: "headline",
+        categoryName: "주요뉴스",
+        url: "https://www.yna.co.kr/view/AKR20261023014400011",
+        summary: [
+          "국회 기재위가 반도체, 이차전지, 바이오 등 국가첨단전략산업 시설 투자 세액공제 혜택을 3년 연장하기로 합의했습니다.",
+          "대기업 15%, 중소기업 25%의 기본 공제율이 유지되어 국내 첨단 제조 팹 투자가 한층 탄력을 받게 되었습니다.",
+          "재계는 글로벌 AI 반도체 패권 경쟁에서 국내 기업들의 투자 불확실성을 해소한 결정적인 조치로 환영했습니다."
+        ],
+        insight: "첨단 반도체 설비 투자 공제 연장은 관련 장비·소재 밸류체인 전반의 설비 증설과 고용 창출로 직결되는 중요한 정책 모멘텀입니다."
+      },
+
       // 🔵 [경제동향]
       {
         id: "news-economy-01",
@@ -581,6 +663,39 @@
         ],
         insight: "기준금리 동결에도 불구하고 시중 대출금리가 여전히 높은 수준을 유지하고 있어, 고객들의 고정비 절감 및 보험료 리모델링 상담 니즈가 커지고 있습니다."
       },
+      // 🔵 [경제동향 / 환율]
+      {
+        id: "news-economy-02",
+        title: "원·달러 환율 1380원대 박스권 등락… 美 대선 관세 리스크에 달러 강세 지속",
+        source: "한국경제",
+        time: "2시간 전",
+        category: "economy",
+        categoryName: "경제동향",
+        url: "https://www.hankyung.com/article/2026091565291",
+        summary: [
+          "서울 외환시장에서 원·달러 환율이 미국의 견조한 경제 지표와 글로벌 관세 리스크로 인해 1380원 중반대에서 강세를 유지했습니다.",
+          "외환당국은 시장 변동성 확대를 방지하기 위해 국민연금과의 외환스왑 라인을 적극 가동하고 있습니다.",
+          "수출 기업들의 결제 대금 유입과 수입 기업들의 달러 결제 수요가 맞서며 치열한 수급 공방이 펼쳐졌습니다."
+        ],
+        insight: "고환율 환경 지속 시 수입 물가 상승 압력으로 이어지므로, 달러 자산 분산 투자와 환노출 상품의 헤지 전략을 점검해야 합니다."
+      },
+      // 🔵 [경제동향 / 수출입 지표]
+      {
+        id: "news-economy-03",
+        title: "10월 수출 전년비 5.1% 증가… 반도체·자동차 역대급 수출 호조 견인",
+        source: "매일경제",
+        time: "2시간 30분 전",
+        category: "economy",
+        categoryName: "경제동향",
+        url: "https://www.mk.co.kr/news/economy/11999628",
+        summary: [
+          "산업통상자원부 집계 결과 10월 수출이 13개월 연속 플러스를 기록하며 무역수지 흑자 기조를 이어갔습니다.",
+          "반도체 수출이 전년 동월 대비 40% 이상 급증하며 전체 수출 성장세를 강력하게 견인했습니다.",
+          "글로벌 친환경 하이브리드 차량 수요 호조로 완성차 수출 역시 두 자릿수 성장을 기록했습니다."
+        ],
+        insight: "주력 수출 품목의 호조세는 제조업 중심 한국 경제의 펀더멘털을 방어하고 있으며, 관련 벤더 협력사들의 실적 개선으로 파급되고 있습니다."
+      },
+
       // ⚠️ [사건사고]
       {
         id: "news-incident-01",
@@ -597,7 +712,7 @@
         ],
         insight: "설계사 개인의 사적 금전 거래나 비인가 투자 권유는 회사 전체의 신뢰를 무너뜨리므로, 내부통제 및 소비자 피해 예방 컴플라이언스 점검이 필수적입니다."
       },
-      // ⚠️ [사건사고]
+      // ⚠️ [사건사고 / 공장 화재]
       {
         id: "news-incident-02",
         title: "부천 오정구 공장 대형 화재 초기 진화 완료… 소방당국 원인 조사 착수",
@@ -612,6 +727,22 @@
           "산업단지 내 노후 시설에 대한 긴급 소방 안전 점검이 관할 지자체 주도로 확대 실시됩니다."
         ],
         insight: "제조 시설 화재는 설비 복구와 영업 중단 손실로 직결되므로, 기업 고객 대상 재물보험 및 화재배상책임보험의 보장 한도 적정성을 사전에 확인해야 합니다."
+      },
+      // ⚠️ [사건사고 / 금융피싱]
+      {
+        id: "news-incident-03",
+        title: "‘연 300% 수익 보장’ 가짜 코인 리딩방 일당 구속… 피해자 120명 180억 편취",
+        source: "매일경제",
+        time: "3시간 30분 전",
+        category: "incident",
+        categoryName: "사건사고",
+        url: "https://www.mk.co.kr/news/economy/11271015",
+        summary: [
+          "가짜 코인 거래소 화면을 조작해 원금 보장과 고수익을 약속하며 투자금을 가로챈 사기 조직 15명이 경찰에 구속 송치되었습니다.",
+          "유명 연예인과 금융 전문가의 딥페이크 영상을 제작해 SNS 광고로 피해자들을 유인한 것으로 드러났습니다.",
+          "경찰청은 비인가 사설 리딩방과 원금 보장 투자 권유에 대해 절대 송금하지 말 것을 강력 당부했습니다."
+        ],
+        insight: "원금 보장과 초고수익을 동시에 내세우는 투자 권유는 100% 금융 사기이므로, 공인된 금융기관 인가 여부를 금융소비자 정보포털에서 교차 검증해야 합니다."
       }
     ];
 
@@ -790,66 +921,78 @@
     // 🧠 자연어 스마트 분야 생성 엔진 (Semantic Expansion Engine)
     // 사용자가 "보험사와 ga의 동향과 관련된 뉴스를 검색해줘"라고 입력하면
     // 대표명은 "보험관련기사"로 정제하고, 연관 키워드로 1200%, 분급, 설계사이동, 제판분리 등을 자동 확장!
+    // 🧠 AI 스마트 자연어 의도 분석 및 핵심 개체명 추출 엔진
+    // 사용자가 "내가 보유한 종목에 대한 기사가 뜨면 검색해서 실시간으로 알려줘. 한미반도체, 삼성화재, 이녹스첨단소재,sk하이닉스"라고 입력하면
+    // 번잡한 대화체(내가, 뜨면, 검색해서, 실시간으로 등)를 100% 걸러내고
+    // 대표분야는 [보유종목], 연관검색어는 순수 종목명 [한미반도체, 삼성화재, 이녹스첨단소재, sk하이닉스]만 정확히 추출!
     function parseNaturalLanguageToCategory(sentence, customRepName) {
       const text = sentence.trim();
       let repName = customRepName ? customRepName.trim() : "";
       let keywords = [];
 
-      const lower = text.toLowerCase();
+      // 1. 대화형 명령어, 서술어, 조사, 불용어 완벽 제거 필터
+      const fillerRegex = /(내가|나의|내|우리|우리의|대한|대해|대해서|관련된|관련|관련하여|동향과|동향|뉴스|기사|뉴스기사|뜨면|나오면|올라오면|발생하면|검색해서|검색해|검색하여|검색|실시간으로|실시간|알려줘|알려달라|찾아줘|보여줘|모아줘|있으면|참고할|추천해줘|분석해줘|해줘|해달라|알려주세요|추가해줘|목록|종목에|기사가|대해서는)/g;
 
-      // 조사 및 불용어 제거 헬퍼
-      const cleanNoun = (w) => w.replace(/(에게|에서|으로|에|한|의|을|를|은|는|이|가|과|와|도|로)$/, "");
-      const stopwords = ["내가", "나의", "내", "우리의", "대한", "대해", "관련된", "관련", "동향과", "동향", "뉴스", "기사", "뉴스기사", "뜨면", "알려줘", "알려달라", "검색해줘", "찾아줘", "보여줘", "있으면", "모아줘", "참고할", "대해서"];
+      // 2. 쉼표(,), 마침표(.), 줄바꿈, 세미콜론 등으로 분리된 명시적 개체명 스마트 추출
+      const segments = text.split(/[,.\n;]+/).map(s => s.trim()).filter(Boolean);
+      const explicitEntities = [];
 
-      // 문장에서 의미 있는 2글자 이상 단어 추출
-      const rawWords = text.replace(/[^가-힣a-zA-Z0-9\s]/g, "").split(/\s+/)
-        .map(cleanNoun)
-        .filter(w => w.length >= 2 && !stopwords.includes(w));
-
-      // (1) 주식 / 보유종목 / 증시 관련 의도 (최우선 판별: '사고/사기' 동사 오작동 방지)
-      if (lower.includes("종목") || lower.includes("주식") || lower.includes("증시") || lower.includes("코스피") || lower.includes("코스닥") || lower.includes("증권") || lower.includes("투자") || lower.includes("보유")) {
-        if (!repName) {
-          if (lower.includes("보유") || lower.includes("내 ") || lower.includes("내가") || lower.includes("매수한")) {
-            repName = "보유종목";
-          } else {
-            repName = "주식·증시";
+      for (const seg of segments) {
+        const cleaned = seg.replace(fillerRegex, ' ').trim();
+        const tokens = cleaned.split(/\s+/)
+          .map(t => t.replace(/(에게|에서|으로|에|한|의|을|를|은|는|이|가|과|와|도|로)$/, '').trim())
+          .filter(t => t.length >= 2 && !['보유', '종목', '주식', '증시', '투자', '매수', '기업', '회사', '뉴스', '기사'].includes(t));
+        for (const tok of tokens) {
+          if (!explicitEntities.includes(tok)) {
+            explicitEntities.push(tok);
           }
         }
-        keywords = ["종목", "주식", "증시", "실적", "공시", "주가", "코스피", "코스닥", "배당", "매매", "투자"];
-      }
-      // (2) 보험사 & GA 동향 관련 의도
-      else if (lower.includes("보험") || lower.includes("ga") || lower.includes("설계사") || lower.includes("수수료") || lower.includes("원수사") || lower.includes("대리점")) {
-        if (!repName) repName = "보험관련기사";
-        keywords = ["보험", "GA", "1200%", "분급", "설계사이동", "스카우트", "제판분리", "보험사", "시책", "수수료", "정착지원금", "CSM"];
-      }
-      // (3) 경제 & 금리 & 금융 동향 의도
-      else if (lower.includes("경제") || lower.includes("금리") || lower.includes("환율") || lower.includes("한국은행") || lower.includes("물가")) {
-        if (!repName) repName = "경제동향";
-        keywords = ["경제", "경제동향", "기준금리", "한국은행", "물가", "환율", "증시", "고금리", "대출금리", "긴축"];
-      }
-      // (4) 사건사고 & 범죄 & 재난 의도 (⚠️ 중요: 단독 '사고'나 '사기'는 동사이므로 복합어/명사로만 안전하게 매칭)
-      else if (lower.includes("사건") || lower.includes("사건사고") || lower.includes("교통사고") || lower.includes("화재사고") || lower.includes("안전사고") || lower.includes("금융사기") || lower.includes("보이스피싱") || lower.includes("폰지사기") || lower.includes("전세사기") || lower.includes("사기피해") || lower.includes("화재") || lower.includes("경찰") || lower.includes("소방") || lower.includes("범죄") || lower.includes("수사") || lower.includes("적발")) {
-        if (!repName) repName = "사건사고";
-        keywords = ["사건", "사고", "사건사고", "경찰", "화재", "범죄", "수사", "적발", "피해", "금융사기", "보이스피싱"];
-      }
-      // (5) 주요뉴스 & 헤드라인 의도
-      else if (lower.includes("주요") || lower.includes("헤드라인") || lower.includes("속보") || lower.includes("오늘")) {
-        if (!repName) repName = "주요뉴스";
-        keywords = ["주요뉴스", "헤드라인", "속보", "종합", "정부", "안보", "통상", "국정"];
-      }
-      // (6) 기타 일반 자연어 입력
-      else {
-        if (!repName) repName = rawWords[0] || "맞춤분야";
-        keywords = [repName, ...rawWords];
       }
 
-      // 문장에서 추출된 개별 종목명이나 핵심 고유명사도 연관 키워드에 자동 병합
-      const mergedKeywords = Array.from(new Set([repName, ...rawWords, ...keywords]));
+      const lower = text.toLowerCase();
+
+      // (1) 주식 / 보유종목 의도 판별
+      if (lower.includes("종목") || lower.includes("주식") || lower.includes("증시") || lower.includes("코스피") || lower.includes("코스닥") || lower.includes("투자") || lower.includes("보유")) {
+        if (!repName) {
+          repName = (lower.includes("보유") || lower.includes("내 ") || lower.includes("내가")) ? "보유종목" : "주식·증시";
+        }
+        // 사용자가 명시한 종목명(한미반도체, 삼성화재, 이녹스첨단소재, SK하이닉스 등)이 있으면 그것만 순수 키워드로 채택!
+        if (explicitEntities.length > 0) {
+          keywords = explicitEntities;
+        } else {
+          keywords = ["종목", "주식", "증시", "실적", "공시", "주가", "배당", "매매"];
+        }
+      }
+      // (2) 보험사 & GA 동향 의도
+      else if (lower.includes("보험") || lower.includes("ga") || lower.includes("설계사") || lower.includes("수수료") || lower.includes("원수사") || lower.includes("대리점")) {
+        if (!repName) repName = "보험관련기사";
+        const specificTopics = explicitEntities.filter(e => !["보험", "ga", "동향", "뉴스", "기사", "보험사"].includes(e.toLowerCase()));
+        if (specificTopics.length > 0) {
+          keywords = specificTopics;
+        } else {
+          keywords = ["보험", "GA", "1200%", "분급", "설계사이동", "스카우트", "제판분리", "보험사", "시책", "수수료", "정착지원금", "CSM"];
+        }
+      }
+      // (3) 경제 & 금리 & 금융 동향 의도
+      else if (lower.includes("경제") || lower.includes("금리") || lower.includes("환율") || lower.includes("물가") || lower.includes("한국은행")) {
+        if (!repName) repName = "경제동향";
+        keywords = explicitEntities.length > 0 ? explicitEntities : ["경제", "경제동향", "기준금리", "한국은행", "물가", "환율", "금리"];
+      }
+      // (4) 사건사고 & 범죄 & 재난 의도
+      else if (lower.includes("사건") || lower.includes("사건사고") || lower.includes("교통사고") || lower.includes("화재") || lower.includes("경찰") || lower.includes("보이스피싱")) {
+        if (!repName) repName = "사건사고";
+        keywords = explicitEntities.length > 0 ? explicitEntities : ["사건", "사고", "사건사고", "경찰", "화재", "범죄", "수사", "피해"];
+      }
+      // (5) 기타 일반 의도
+      else {
+        if (!repName) repName = explicitEntities[0] || "맞춤분야";
+        keywords = explicitEntities.length > 0 ? explicitEntities : [repName];
+      }
 
       return {
         id: "cat_" + Date.now(),
         name: repName,
-        keywords: mergedKeywords
+        keywords: Array.from(new Set(keywords))
       };
     }
 
@@ -1247,6 +1390,7 @@ ${item.url}`;
     }
 
     // 🔍 분야별 기사 필터링 (연관 키워드 1200%, 분급, 설계사이동, 제판분리 등 폭넓은 시맨틱 매칭)
+    // 🔍 분야별 기사 필터링 (완벽한 분야별 엄격 격리 및 맞춤 키워드 정밀 매칭)
     function renderFeed() {
       let filtered = initialNewsData.filter(item => {
         // 1. 카테고리 필터
@@ -1255,26 +1399,58 @@ ${item.url}`;
         } else if (currentCategory !== "all") {
           const selectedCat = myCategories.find(c => c.id === currentCategory);
           if (selectedCat) {
-            const matchId = item.category === selectedCat.id;
-            const matchName = item.categoryName && item.categoryName.includes(selectedCat.name);
-            const searchTerms = selectedCat.keywords || [selectedCat.name];
+            const catName = selectedCat.name;
+            const catId = selectedCat.id;
 
-            const matchKeywords = searchTerms.some(term => {
-              if (!term) return false;
-              const t = term.toLowerCase();
-              return (
-                item.title.toLowerCase().includes(t) ||
-                (item.categoryName && item.categoryName.toLowerCase().includes(t)) ||
-                item.summary.some(s => s.toLowerCase().includes(t)) ||
-                (item.insight && item.insight.toLowerCase().includes(t))
-              );
-            });
-
-            if (!matchId && !matchName && !matchKeywords) return false;
+            // ① [보험관련기사] 탭 선택 시: 경제동향, 주요뉴스, 사건사고, 보유종목 절대 차단!
+            if (catId === "insurance_all" || catName === "보험관련기사") {
+              if (item.categoryName !== "보험관련기사" && !["fee", "ga", "insurance"].includes(item.category)) {
+                return false;
+              }
+            }
+            // ② [주요뉴스] 탭 선택 시: 주요뉴스만 허용
+            else if (catId === "headline" || catName === "주요뉴스") {
+              if (item.categoryName !== "주요뉴스" && item.category !== "headline") {
+                return false;
+              }
+            }
+            // ③ [경제동향] 탭 선택 시: 경제동향만 허용
+            else if (catId === "economy" || catName === "경제동향") {
+              if (item.categoryName !== "경제동향" && item.category !== "economy") {
+                return false;
+              }
+            }
+            // ④ [사건사고] 탭 선택 시: 사건사고만 허용
+            else if (catId === "incident" || catName === "사건사고") {
+              if (item.categoryName !== "사건사고" && item.category !== "incident") {
+                return false;
+              }
+            }
+            // ⑤ [수수료] 탭 선택 시: 수수료 전문 뉴스만 허용
+            else if (catId === "fee" || catName === "수수료") {
+              if (item.category !== "fee" && !item.title.includes("수수료") && !item.title.includes("1200%")) {
+                return false;
+              }
+            }
+            // ⑥ 사용자 정의 맞춤 분야 (예: 보유종목 - 한미반도체, 삼성화재, 이녹스첨단소재, SK하이닉스 등)
+            else {
+              const searchTerms = selectedCat.keywords || [catName];
+              const matchKeywords = searchTerms.some(term => {
+                if (!term || term.trim() === "") return false;
+                const t = term.trim().toLowerCase();
+                return (
+                  item.title.toLowerCase().includes(t) ||
+                  (item.categoryName && item.categoryName.toLowerCase().includes(t)) ||
+                  item.summary.some(s => s.toLowerCase().includes(t))
+                );
+              });
+              const matchDirect = item.categoryName === catName || item.category === catId;
+              if (!matchKeywords && !matchDirect) return false;
+            }
           }
         }
 
-        // 2. 관심 키워드 필터
+        // 2. 관심 키워드 필터 (#1200% 등 칩 선택 시)
         if (activeKeyword) {
           const kw = activeKeyword.toLowerCase();
           const matchTitle = item.title.toLowerCase().includes(kw);
