@@ -1,7 +1,8 @@
 """
 fetch_and_summarize.py
-보험저널뿐만 아니라 한국경제, 매일경제, 금융 전문지 등 다양한 언론사의 기사를 폭넓게 수집하고
-Gemini API로 3줄 요약과 실무 인사이트를 생성하여 news_data.json으로 저장하는 파이프라인입니다.
+보험 뉴스뿐만 아니라 오늘의 주요뉴스, 경제동향, 사건사고까지 폭넓게 수집하고,
+Gemini API를 통해 간결한 대표 키워드 카테고리(주요뉴스, 경제동향, 사건사고, 보험, GA, 수수료)로
+분류 및 3줄 요약과 실무 인사이트를 생성하는 자동화 파이프라인입니다.
 """
 
 import os
@@ -11,36 +12,51 @@ import urllib.parse
 import xml.etree.ElementTree as ET
 from datetime import datetime
 
-# 1. 폭넓은 언론사 RSS 피드 목록 (보험저널 + 주요 경제지 금융/보험 섹션)
+# 1. 다각화된 언론사 RSS 소스 (주요뉴스, 경제동향, 사건사고, 보험 전문지)
 RSS_SOURCES = [
+    # 오늘의 주요뉴스 헤드라인
     {
-        "name": "보험저널",
-        "url": "https://www.insjournal.co.kr/rss/allArticle.xml",
-        "category": "ga"
+        "name": "연합뉴스(주요뉴스)",
+        "url": "https://www.yna.co.kr/rss/news.xml",
+        "category": "headline",
+        "categoryName": "주요뉴스"
     },
+    # 경제동향 (거시경제, 금리, 환율)
     {
-        "name": "보험저널(종합)",
-        "url": "https://www.insjournal.co.kr/rss/S1N1.xml",
-        "category": "insurer"
-    },
-    {
-        "name": "매일경제(금융)",
+        "name": "매일경제(경제)",
         "url": "https://www.mk.co.kr/rss/30100041/",
-        "category": "finance"
+        "category": "economy",
+        "categoryName": "경제동향"
     },
     {
-        "name": "한국경제(경제·금융)",
+        "name": "한국경제(경제)",
         "url": "https://www.hankyung.com/feed/economy",
-        "category": "finance"
+        "category": "economy",
+        "categoryName": "경제동향"
+    },
+    # 사건사고 및 사회 이슈
+    {
+        "name": "연합뉴스(사회/사건사고)",
+        "url": "https://www.yna.co.kr/rss/society.xml",
+        "category": "incident",
+        "categoryName": "사건사고"
+    },
+    # 보험 / GA / 수수료 전문 뉴스
+    {
+        "name": "보험저널(전체)",
+        "url": "https://www.insjournal.co.kr/rss/allArticle.xml",
+        "category": "insurance",
+        "categoryName": "보험"
     }
 ]
 
-# 2. 네이버 뉴스 검색 키워드 (다양한 언론사의 보험/GA 관련 기사 폭넓은 수집)
+# 2. 네이버 뉴스 검색 쿼리 (대표 키워드 매핑)
 SEARCH_QUERIES = [
-    {"query": "보험 GA", "category": "ga"},
-    {"query": "보험 수수료 1200%", "category": "fee"},
-    {"query": "보험사 신상품 CSM", "category": "insurer"},
-    {"query": "금감원 보험사 검사", "category": "fee"}
+    {"query": "오늘의 주요뉴스", "category": "headline", "categoryName": "주요뉴스"},
+    {"query": "경제동향 기준금리", "category": "economy", "categoryName": "경제동향"},
+    {"query": "사건사고 금융사기", "category": "incident", "categoryName": "사건사고"},
+    {"query": "보험 GA", "category": "ga", "categoryName": "GA"},
+    {"query": "보험 수수료 1200%", "category": "fee", "categoryName": "수수료"}
 ]
 
 NAVER_CLIENT_ID = os.getenv("NAVER_CLIENT_ID", "")
@@ -49,7 +65,7 @@ GEMINI_API_KEY = os.getenv("GEMINI_API_KEY", "")
 
 
 def fetch_rss_articles(source, limit=4):
-    """RSS 피드에서 개별 기사의 정확한 원문 URL과 제목, 요약문을 파싱합니다."""
+    """RSS 피드에서 기사 상세 직통 URL과 제목, 요약문을 파싱합니다."""
     articles = []
     try:
         req = urllib.request.Request(
@@ -64,7 +80,6 @@ def fetch_rss_articles(source, limit=4):
 
         for item in items[:limit]:
             title = item.findtext("title", "").strip()
-            # 정확한 기사 개별 원문 URL 추출
             link = item.findtext("link", "").strip()
             desc = item.findtext("description", "").strip()
             pub_date = item.findtext("pubDate", "").strip()
@@ -72,11 +87,12 @@ def fetch_rss_articles(source, limit=4):
             if title and link:
                 articles.append({
                     "title": title,
-                    "url": link,  # 기사 상세 원문 링크
+                    "url": link,
                     "source": source["name"],
                     "content": desc,
                     "pub_date": pub_date,
-                    "default_cat": source.get("category", "ga")
+                    "default_cat": source.get("category", "headline"),
+                    "default_cat_name": source.get("categoryName", "주요뉴스")
                 })
     except Exception as e:
         print(f"[{source['name']}] RSS 수집 오류: {e}")
@@ -85,7 +101,7 @@ def fetch_rss_articles(source, limit=4):
 
 
 def fetch_naver_search_articles(query_info, limit=3):
-    """네이버 검색 API를 활용해 다양한 종합일간지/경제지의 보험 기사를 수집합니다."""
+    """네이버 검색 API를 활용해 종합 뉴스 및 이슈 기사를 수집합니다."""
     if not NAVER_CLIENT_ID or not NAVER_CLIENT_SECRET:
         return []
 
@@ -100,19 +116,18 @@ def fetch_naver_search_articles(query_info, limit=3):
         with urllib.request.urlopen(req, timeout=10) as resp:
             data = json.loads(resp.read().decode("utf-8"))
             for item in data.get("items", []):
-                # HTML 태그 제거
                 title = item["title"].replace("<b>", "").replace("</b>", "").replace("&quot;", '"').replace("&amp;", "&")
                 desc = item["description"].replace("<b>", "").replace("</b>", "").replace("&quot;", '"').replace("&amp;", "&")
-                # 언론사 직접 원문 링크(originallink) 우선, 없으면 link
                 link = item.get("originallink") or item.get("link")
-                
+
                 articles.append({
                     "title": title,
-                    "url": link,  # 해당 기사 상세 페이지 링크
-                    "source": "언론사 종합",
+                    "url": link,
+                    "source": "종합뉴스",
                     "content": desc,
                     "pub_date": item.get("pubDate", ""),
-                    "default_cat": query_info["category"]
+                    "default_cat": query_info["category"],
+                    "default_cat_name": query_info["categoryName"]
                 })
     except Exception as e:
         print(f"[네이버 검색 '{query_info['query']}'] 수집 오류: {e}")
@@ -121,47 +136,47 @@ def fetch_naver_search_articles(query_info, limit=3):
 
 
 def analyze_with_gemini(article):
-    """Gemini API를 호출하여 정확한 카테고리 분류, AI 3줄 요약, 실무 인사이트를 도출합니다."""
+    """기사를 분석하여 간결한 대표 키워드 카테고리로 분류하고 3줄 요약과 실무 인사이트를 도출합니다."""
+    default_cat = article.get("default_cat", "headline")
+    default_cat_name = article.get("default_cat_name", "주요뉴스")
+
     if not GEMINI_API_KEY:
-        cat = article.get("default_cat", "ga")
-        cat_map = {
-            "ga": ("보험·GA", "indigo"),
-            "fee": ("수수료·제도", "amber"),
-            "insurer": ("보험사 동향", "blue"),
-            "finance": ("경제·금융", "emerald")
-        }
-        name, color = cat_map.get(cat, ("보험·GA", "indigo"))
         return {
-            "category": cat,
-            "categoryName": name,
-            "categoryColor": color,
-            "isBreaking": False,
+            "category": default_cat,
+            "categoryName": default_cat_name,
             "summary": [
                 article["title"],
-                "상세 기사 전문은 원문 바로가기 링크를 통해 확인하실 수 있습니다.",
-                "업계 최신 동향과 정책 방향성을 확인하세요."
+                "기사 상세 내용은 원문 바로가기 링크에서 확인하실 수 있습니다.",
+                "업계 및 사회 주요 이슈를 실시간으로 확인하세요."
             ],
-            "insight": "GA 현장 영업 조직과 판매 수수료 구조에 미칠 영향을 면밀히 모니터링해야 합니다."
+            "insight": f"[{default_cat_name}] 관련 핵심 흐름을 지속적으로 모니터링할 필요가 있습니다."
         }
 
-    prompt = f"""당신은 15년 경력의 보험 및 금융 전문 시니어 애널리스트입니다.
-아래 다양한 언론사에서 수집된 기사를 분석하여 JSON 형식으로만 응답해 주세요.
+    prompt = f"""당신은 전문 시니어 뉴스 애널리스트입니다.
+아래 기사를 분석하여 반드시 아래 JSON 형식으로만 응답해 주세요.
 
 [기사 제목]: {article['title']}
 [기사 내용 요약]: {article['content']}
 
-[반드시 준수할 JSON 형식]:
+[카테고리 분류 규칙]:
+- 반드시 다음 대표 키워드 중 가장 적합한 하나를 선택하세요:
+  1) "주요뉴스": 정치, 사회 전반, 주요 정책, 글로벌 헤드라인
+  2) "경제동향": 거시경제, 기준금리, 물가, 환율, 증시 지표
+  3) "사건사고": 사회적 사건사고, 금융 사기/피싱, 재난 및 안전
+  4) "보험": 생·손보사 신상품, IFRS17 CSM, 실손/건강보험
+  5) "GA": 법인보험대리점 조직, 제판분리, 설계사 채널 동향
+  6) "수수료": 1200% 룰, 모집수수료 제도, 금감원 규제 및 시책
+
+[JSON 출력 형식]:
 {{
-  "category": "ga" | "fee" | "insurer" | "finance",
-  "categoryName": "보험·GA" | "수수료·제도" | "보험사 동향" | "경제·금융",
-  "categoryColor": "indigo" (보험·GA) | "amber" (수수료·제도) | "blue" (보험사 동향) | "emerald" (경제·금융),
-  "isBreaking": true 또는 false (업계에 파급력이 매우 큰 주요 속보인 경우 true),
+  "category": "headline" | "economy" | "incident" | "insurance" | "ga" | "fee",
+  "categoryName": "주요뉴스" | "경제동향" | "사건사고" | "보험" | "GA" | "수수료",
   "summary": [
     "핵심 팩트 요약 1문장",
     "핵심 팩트 요약 2문장",
     "핵심 팩트 요약 3문장"
   ],
-  "insight": "이 뉴스가 GA 영업 현장, 설계사 조직, 수수료 마진, 상품 판매 전략에 미치는 실질적인 시사점 1~2문장"
+  "insight": "이 뉴스가 비즈니스, 영업 현장, 자산 관리, 개인 일상에 미치는 실질적인 시사점 1~2문장"
 }}
 """
 
@@ -183,30 +198,27 @@ def analyze_with_gemini(article):
             return json.loads(json_text)
     except Exception as e:
         print(f"Gemini API 호출 실패: {e}")
-        cat = article.get("default_cat", "ga")
         return {
-            "category": cat,
-            "categoryName": "보험·GA",
-            "categoryColor": "indigo",
-            "isBreaking": False,
+            "category": default_cat,
+            "categoryName": default_cat_name,
             "summary": [article["title"]],
-            "insight": "현장 영향도 분석 요망."
+            "insight": f"[{default_cat_name}] 관련 주요 동향 확인 요망."
         }
 
 
 def main():
-    print("1. 폭넓은 언론사 기사 수집 시작...")
+    print("1. 주요뉴스, 경제동향, 사건사고, 보험 기사 수집 시작...")
     collected_articles = []
 
     # ① 주요 언론사 RSS 수집
     for src in RSS_SOURCES:
         collected_articles.extend(fetch_rss_articles(src, limit=4))
 
-    # ② 네이버 뉴스를 통한 주요 일간지/경제지 수집
+    # ② 네이버 뉴스를 통한 주요 종합 기사 수집
     for q_info in SEARCH_QUERIES:
         collected_articles.extend(fetch_naver_search_articles(q_info, limit=3))
 
-    # 중복 제거 (URL 기준)
+    # 중복 제거
     unique_articles = []
     seen_urls = set()
     for art in collected_articles:
@@ -226,11 +238,9 @@ def main():
             "title": art["title"],
             "source": art["source"],
             "time": "최신",
-            "url": art["url"],  # 기사 상세 직통 링크
-            "category": ai_data.get("category", "ga"),
-            "categoryName": ai_data.get("categoryName", "보험·GA"),
-            "categoryColor": ai_data.get("categoryColor", "indigo"),
-            "isBreaking": ai_data.get("isBreaking", False),
+            "url": art["url"],
+            "category": ai_data.get("category", art.get("default_cat", "headline")),
+            "categoryName": ai_data.get("categoryName", art.get("default_cat_name", "주요뉴스")),
             "summary": ai_data.get("summary", []),
             "insight": ai_data.get("insight", "")
         })
