@@ -436,6 +436,39 @@
 
     // 5. 검증된 실제 기사 데이터 셋
     const initialNewsData = [
+      // 📈 [보유종목 / 주식 / 증시]
+      {
+        id: "news-stock-01",
+        title: "삼성전자·SK하이닉스 외인 매수세 유입… 코스피 2600선 회복 안착",
+        source: "매일경제",
+        time: "20분 전",
+        category: "stock",
+        categoryName: "보유종목",
+        url: "https://www.mk.co.kr/news/stock/11999812",
+        summary: [
+          "외국인 투자자들의 반도체 대형주 중심 순매수세가 유입되며 코스피 지수가 2600선을 회복했습니다.",
+          "AI 서버용 메모리 반도체 수요 반등과 3분기 실적 개선 기대감이 주요 종목 주가를 견인했습니다.",
+          "증권가에서는 보유 종목의 펀더멘털과 외국인 수급 변동성을 점검할 것을 조언했습니다."
+        ],
+        insight: "보유 종목의 단기 시세 등락에 흔들리기보다 분기 실적 발표와 외국인 순매수 추이를 모니터링하여 분할 매매 대응 전략을 세우는 것이 유리합니다."
+      },
+      // 📈 [보유종목 / 보험주 / 배당 / 실적]
+      {
+        id: "news-stock-02",
+        title: "한화생명·삼성생명 등 보험주, IFRS17 호실적·주주환원 배당 확대에 강세",
+        source: "한국경제",
+        time: "30분 전",
+        category: "stock",
+        categoryName: "보유종목",
+        url: "https://www.hankyung.com/article/2026102148191",
+        summary: [
+          "주요 상장 보험사들이 IFRS17 도입 이후 안정적인 CSM 성장과 사상 최대 실적을 달성했습니다.",
+          "밸류업 프로그램에 발맞춰 결산 배당 확대와 자사주 소각 등 주주환원 정책을 대폭 강화하기로 했습니다.",
+          "고배당 매력과 저PBR 메리트가 부각되며 연기금과 기관의 동반 매수세가 이어졌습니다."
+        ],
+        insight: "보유 종목이 고배당 금융주인 경우 연말 배당락 전후 주가 흐름과 배당수익률을 종합 검토하여 장기 보유 여부를 판단해야 합니다."
+      },
+
       // 🟢 [보험관련기사 / 수수료 / 1200%]
       {
         id: "news-fee-01",
@@ -764,39 +797,59 @@
 
       const lower = text.toLowerCase();
 
-      // (1) 보험사 & GA 동향 관련 의도
-      if (lower.includes("보험") || lower.includes("ga") || lower.includes("설계사") || lower.includes("수수료")) {
+      // 조사 및 불용어 제거 헬퍼
+      const cleanNoun = (w) => w.replace(/(에게|에서|으로|에|한|의|을|를|은|는|이|가|과|와|도|로)$/, "");
+      const stopwords = ["내가", "나의", "내", "우리의", "대한", "대해", "관련된", "관련", "동향과", "동향", "뉴스", "기사", "뉴스기사", "뜨면", "알려줘", "알려달라", "검색해줘", "찾아줘", "보여줘", "있으면", "모아줘", "참고할", "대해서"];
+
+      // 문장에서 의미 있는 2글자 이상 단어 추출
+      const rawWords = text.replace(/[^가-힣a-zA-Z0-9\s]/g, "").split(/\s+/)
+        .map(cleanNoun)
+        .filter(w => w.length >= 2 && !stopwords.includes(w));
+
+      // (1) 주식 / 보유종목 / 증시 관련 의도 (최우선 판별: '사고/사기' 동사 오작동 방지)
+      if (lower.includes("종목") || lower.includes("주식") || lower.includes("증시") || lower.includes("코스피") || lower.includes("코스닥") || lower.includes("증권") || lower.includes("투자") || lower.includes("보유")) {
+        if (!repName) {
+          if (lower.includes("보유") || lower.includes("내 ") || lower.includes("내가") || lower.includes("매수한")) {
+            repName = "보유종목";
+          } else {
+            repName = "주식·증시";
+          }
+        }
+        keywords = ["종목", "주식", "증시", "실적", "공시", "주가", "코스피", "코스닥", "배당", "매매", "투자"];
+      }
+      // (2) 보험사 & GA 동향 관련 의도
+      else if (lower.includes("보험") || lower.includes("ga") || lower.includes("설계사") || lower.includes("수수료") || lower.includes("원수사") || lower.includes("대리점")) {
         if (!repName) repName = "보험관련기사";
         keywords = ["보험", "GA", "1200%", "분급", "설계사이동", "스카우트", "제판분리", "보험사", "시책", "수수료", "정착지원금", "CSM"];
       }
-      // (2) 경제 & 금리 & 금융 동향 의도
+      // (3) 경제 & 금리 & 금융 동향 의도
       else if (lower.includes("경제") || lower.includes("금리") || lower.includes("환율") || lower.includes("한국은행") || lower.includes("물가")) {
         if (!repName) repName = "경제동향";
         keywords = ["경제", "경제동향", "기준금리", "한국은행", "물가", "환율", "증시", "고금리", "대출금리", "긴축"];
       }
-      // (3) 사건사고 & 사기 & 화재 의도
-      else if (lower.includes("사건") || lower.includes("사고") || lower.includes("사기") || lower.includes("화재") || lower.includes("경찰")) {
+      // (4) 사건사고 & 범죄 & 재난 의도 (⚠️ 중요: 단독 '사고'나 '사기'는 동사이므로 복합어/명사로만 안전하게 매칭)
+      else if (lower.includes("사건") || lower.includes("사건사고") || lower.includes("교통사고") || lower.includes("화재사고") || lower.includes("안전사고") || lower.includes("금융사기") || lower.includes("보이스피싱") || lower.includes("폰지사기") || lower.includes("전세사기") || lower.includes("사기피해") || lower.includes("화재") || lower.includes("경찰") || lower.includes("소방") || lower.includes("범죄") || lower.includes("수사") || lower.includes("적발")) {
         if (!repName) repName = "사건사고";
-        keywords = ["사건", "사고", "사건사고", "사기", "폰지사기", "경찰", "화재", "범죄", "수사", "적발", "피해"];
+        keywords = ["사건", "사고", "사건사고", "경찰", "화재", "범죄", "수사", "적발", "피해", "금융사기", "보이스피싱"];
       }
-      // (4) 주요뉴스 & 헤드라인 의도
+      // (5) 주요뉴스 & 헤드라인 의도
       else if (lower.includes("주요") || lower.includes("헤드라인") || lower.includes("속보") || lower.includes("오늘")) {
         if (!repName) repName = "주요뉴스";
         keywords = ["주요뉴스", "헤드라인", "속보", "종합", "정부", "안보", "통상", "국정"];
       }
-      // (5) 기타 일반 자연어 입력
+      // (6) 기타 일반 자연어 입력
       else {
-        const words = text.replace(/[^가-힣a-zA-Z0-9\s]/g, "").split(/\s+/).filter(w => w.length >= 2 && !["검색해줘", "보여줘", "관련된", "뉴스", "모아줘", "알려줘", "대해서"].includes(w));
-        if (!repName) repName = words[0] || "맞춤분야";
-        keywords = [repName, ...words];
+        if (!repName) repName = rawWords[0] || "맞춤분야";
+        keywords = [repName, ...rawWords];
       }
 
-      if (!keywords.includes(repName)) keywords.unshift(repName);
+      // 문장에서 추출된 개별 종목명이나 핵심 고유명사도 연관 키워드에 자동 병합
+      const mergedKeywords = Array.from(new Set([repName, ...rawWords, ...keywords]));
 
       return {
         id: "cat_" + Date.now(),
         name: repName,
-        keywords: Array.from(new Set(keywords))
+        keywords: mergedKeywords
       };
     }
 
@@ -843,24 +896,29 @@
       }
 
       categoryListContainer.innerHTML = myCategories.map((cat, index) => `
-        <div class="p-2.5 rounded-xl bg-slate-50 border border-slate-200/80 space-y-1">
+        <div class="p-3 rounded-xl bg-slate-50 border border-slate-200/80 space-y-2 transition-all" id="cat-card-${index}">
           <div class="flex items-center justify-between">
-            <div class="flex items-center space-x-2 flex-1 mr-2" id="cat-display-${index}">
+            <div class="flex items-center space-x-2 flex-1 mr-2">
               <span class="text-xs font-bold text-indigo-600">📁</span>
               <span class="text-xs font-extrabold text-slate-900">${cat.name}</span>
+              <span class="text-[10px] text-slate-400 font-medium">(${(cat.keywords || []).length}개 키워드)</span>
             </div>
-            <div class="flex items-center space-x-1" id="cat-actions-${index}">
-              <button onclick="startEditCategory(${index})" class="p-1 text-slate-400 hover:text-indigo-600 rounded-md transition-colors" title="수정">
-                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+            <div class="flex items-center space-x-1">
+              <button onclick="startEditCategory(${index})" class="flex items-center space-x-0.5 px-2 py-1 text-[11px] font-semibold text-indigo-700 bg-indigo-50 hover:bg-indigo-100 rounded-lg transition-colors border border-indigo-200/60" title="분야명 및 연관검색어 수정">
+                <svg class="w-3 h-3 text-indigo-600" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15.232 5.232l3.536 3.536m-2.036-5.036a2.5 2.5 0 113.536 3.536L6.5 21.036H3v-3.572L16.732 3.732z"/></svg>
+                <span>수정</span>
               </button>
-              <button onclick="deleteCategory(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-md transition-colors" title="삭제">
+              <button onclick="deleteCategory(${index})" class="p-1 text-slate-400 hover:text-rose-600 rounded-lg transition-colors" title="분야 삭제">
                 <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
               </button>
             </div>
           </div>
-          <!-- 연관 자동 검색 키워드 표시 -->
-          <div class="text-[10px] text-slate-500 pl-5 leading-relaxed">
-            <span class="font-semibold text-slate-700">연관 검색어:</span> ${(cat.keywords || [cat.name]).join(", ")}
+          <!-- 연관 검색어 목록 -->
+          <div class="text-[11px] text-slate-600 pl-5 pr-1">
+            <div class="flex items-start">
+              <span class="font-bold text-slate-700 text-[10px] flex-shrink-0 mr-1.5 mt-0.5">🔍 연관 검색어:</span>
+              <span class="text-[10px] text-slate-600 leading-relaxed break-all">${(cat.keywords || [cat.name]).join(", ")}</span>
+            </div>
           </div>
         </div>
       `).join("");
@@ -873,44 +931,73 @@
       showToast(`'${removed.name}' 분야가 삭제되었습니다.`, "🗑️");
     };
 
+    // ✏️ 대표분야 이름 및 연관 검색어 인라인 수정 폼
     window.startEditCategory = function(index) {
       const currentCat = myCategories[index];
-      const displayEl = document.getElementById(`cat-display-${index}`);
-      const actionsEl = document.getElementById(`cat-actions-${index}`);
+      const cardEl = document.getElementById(`cat-card-${index}`);
+      if (!cardEl) return;
 
-      displayEl.innerHTML = `
-        <span class="text-xs font-bold text-indigo-600">📁</span>
-        <input type="text" id="edit-cat-input-${index}" value="${currentCat.name.replace(/"/g, '&quot;')}" class="w-full bg-white border border-indigo-400 rounded-lg px-2 py-0.5 text-xs text-slate-900 focus:outline-none">
+      const keywordsStr = (currentCat.keywords || [currentCat.name]).join(", ");
+
+      cardEl.className = "p-3 rounded-xl bg-indigo-50/60 border-2 border-indigo-400 space-y-2.5 transition-all shadow-xs";
+      cardEl.innerHTML = `
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-indigo-950 flex items-center justify-between">
+            <span>📁 대표 분야 이름 (탭에 표시될 이름)</span>
+            <span class="text-[9px] text-slate-400">상단 탭 명칭</span>
+          </label>
+          <input type="text" id="edit-cat-name-${index}" value="${currentCat.name.replace(/"/g, '&quot;')}" class="w-full bg-white border border-indigo-300 rounded-lg px-2.5 py-1.5 text-xs text-slate-900 font-bold focus:outline-none focus:ring-2 focus:ring-indigo-600">
+        </div>
+
+        <div class="space-y-1">
+          <label class="text-[10px] font-bold text-indigo-950 flex items-center justify-between">
+            <span>🔍 연관 검색어 (쉼표로 구분하여 자유롭게 수정·추가·삭제)</span>
+            <span class="text-[9px] text-indigo-600 font-normal">이 단어가 들어간 기사를 매칭합니다</span>
+          </label>
+          <textarea id="edit-cat-keywords-${index}" rows="2" class="w-full bg-white border border-indigo-300 rounded-lg p-2 text-xs text-slate-800 leading-relaxed focus:outline-none focus:ring-2 focus:ring-indigo-600" placeholder="단어들을 쉼표(,)로 구분하여 입력">${keywordsStr}</textarea>
+          <p class="text-[10px] text-slate-500">💡 팁: 종목, 주식, 삼성전자, 실적, 배당, 공시 등 원하는 단어를 쉼표로 연결하세요.</p>
+        </div>
+
+        <div class="flex items-center justify-end space-x-2 pt-1 border-t border-indigo-100">
+          <button onclick="renderCategoryListInModal()" class="px-2.5 py-1 text-xs font-medium text-slate-600 hover:text-slate-900 rounded-lg hover:bg-slate-200/50 transition-colors">
+            취소
+          </button>
+          <button onclick="saveEditCategory(${index})" class="px-3 py-1 bg-indigo-600 hover:bg-indigo-700 text-white font-bold text-xs rounded-lg shadow-xs transition-colors flex items-center space-x-1">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
+            <span>저장하기</span>
+          </button>
+        </div>
       `;
-      actionsEl.innerHTML = `
-        <button onclick="saveEditCategory(${index})" class="p-1 text-emerald-600 hover:text-emerald-700 font-bold" title="저장">
-          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M5 13l4 4L19 7"/></svg>
-        </button>
-        <button onclick="renderCategoryListInModal()" class="p-1 text-slate-400 hover:text-slate-600" title="취소">
-          <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
-        </button>
-      `;
-      const input = document.getElementById(`edit-cat-input-${index}`);
-      input.focus();
-      input.addEventListener("keydown", (e) => {
-        if (e.key === "Enter") saveEditCategory(index);
-        if (e.key === "Escape") renderCategoryListInModal();
-      });
+
+      const nameInput = document.getElementById(`edit-cat-name-${index}`);
+      if (nameInput) nameInput.focus();
     };
 
     window.saveEditCategory = function(index) {
-      const input = document.getElementById(`edit-cat-input-${index}`);
-      let newVal = input ? input.value.trim() : "";
-      if (!newVal) {
+      const nameInput = document.getElementById(`edit-cat-name-${index}`);
+      const kwInput = document.getElementById(`edit-cat-keywords-${index}`);
+
+      let newName = nameInput ? nameInput.value.trim() : "";
+      if (!newName) {
         showToast("대표 분야 이름을 입력해 주세요.", "⚠️");
         return;
       }
-      myCategories[index].name = newVal;
-      if (!myCategories[index].keywords.includes(newVal)) {
-        myCategories[index].keywords.unshift(newVal);
+
+      let newKeywords = [];
+      if (kwInput) {
+        newKeywords = kwInput.value.split(/[,]+/).map(k => k.trim()).filter(Boolean);
       }
+      if (newKeywords.length === 0) {
+        newKeywords = [newName];
+      }
+      if (!newKeywords.includes(newName)) {
+        newKeywords.unshift(newName);
+      }
+
+      myCategories[index].name = newName;
+      myCategories[index].keywords = Array.from(new Set(newKeywords));
       saveCategories();
-      showToast(`'${newVal}' 대표 분야로 수정되었습니다.`, "✅");
+      showToast(`'${newName}' 분야와 연관 검색어가 수정되었습니다.`, "✅");
     };
 
     // ✨ 자연어 문장 입력으로 스마트 대표 분야 생성
